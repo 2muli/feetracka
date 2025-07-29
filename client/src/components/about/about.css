@@ -1,0 +1,101 @@
+/* General Container Styling */
+.about-container2 {
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  color: black;
+  background: greenyellow;
+  width: 90%;
+  margin: auto;
+  text-align: center;
+  justify-content: center;
+  background-size: 200% auto; /* Scale the image vertically to fit the viewport */
+  min-height: 100vh; /* Ensure background covers full viewport */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto; /* Allow scrolling while keeping content inside background */
+}
+.about-container2::-webkit-scrollbar {
+  display: none;
+}
+/* Header Styling */
+.about-container2 h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Section Styling */
+.about-container2 .about-section1 {
+  width: 80%;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  text-align: center;
+  display: block;
+}
+
+/* Ensure headers and paragraphs are displayed as blocks and centered */
+.about-container2 h2, 
+.about-container2 h3, 
+.about-container2 p {
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.about-container2 h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: gray;
+}
+
+.about-container2 h3 {
+  font-size: 1.5rem;
+  color: indianred;
+}
+
+.about-container2 p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: black;
+}
+
+/* List Styling */
+.about-container2 ul {
+  list-style-type: disc;
+  margin-left: auto;
+  margin-right: auto;
+  display: table;
+}
+
+.about-container2 ul li {
+  padding: 5px 0;
+  font-size: 1.2rem;
+  text-align: left;
+}
+
+/* Call to Action Button */
+.about-container2 button {
+  background: #f1c40f;
+  color: black;
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+  margin-top: 20px;
+}
+
+.about-container2 button:hover {
+  background: #d4a80c;
+}
+@media (max-width: 600px) {
+  .about-container2 {
+    margin-bottom: 50px;
+  }
+    
+}

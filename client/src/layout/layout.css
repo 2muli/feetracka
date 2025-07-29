@@ -1,0 +1,49 @@
+/* Base layout */
+.sb-nav-fixed {
+  height: 100vh;
+}
+
+#layoutSidenav {
+  display: flex;
+  height: calc(100vh - 56px);
+}
+
+/* Sidebar styles */
+#layoutSidenav_nav {
+  width: 225px;
+  height: 100%;
+  position: fixed;
+  z-index: 1030;
+  transition: transform 0.15s ease-in-out;
+}
+
+/* Content area */
+#layoutSidenav_content {
+  width: 100%;
+  padding: 20px;
+  margin-left: 0;
+  transition: margin-left 0.15s ease-in-out;
+  overflow-y: auto;
+}
+
+/* Mobile styles */
+.sb-sidenav-closed {
+  transform: translateX(-225px);
+}
+
+.sb-sidenav-open {
+  transform: translateX(0);
+}
+
+/* Desktop styles */
+@media (min-width: 992px) {
+  .sb-sidenav-closed, 
+  .sb-sidenav-open {
+    transform: translateX(0);
+  }
+
+  #layoutSidenav_content {
+    margin-left: 225px;
+    width: calc(100% - 225px);
+  }
+}
