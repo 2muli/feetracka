@@ -1,10 +1,19 @@
-/* Ensure body and html take full height */
+/* Global resets */
 html, body {
-  height: 100%;
   margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
 }
 
-/* Fix Navbar to top */
+/* Root container for Layout */
+.layout-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Fixed navbar */
 .fixed-navbar {
   position: fixed;
   top: 0;
@@ -12,75 +21,59 @@ html, body {
   z-index: 1000;
 }
 
-/* Wrapper for entire layout */
-#layoutWrapper {
+/* Main body of layout */
+.layout-body {
   display: flex;
-  flex-direction: row;
-  height: 100vh;
-  padding-top: 56px; /* navbar height */
-  overflow: hidden;
+  flex: 1;
+  padding-top: 56px; /* adjust for fixed navbar */
+  min-height: 0;
 }
 
-/* Sidebar */
-#sidebarWrapper {
-  width: 100px;
-}
-
-#sidebar {
+/* Sidebar styling */
+.sidebar-area {
+  width: 250px;
   background-color: #343a40;
   color: white;
-  height: calc(100vh - 56px);
-  position: fixed;
-  top: 56px;
-  left: 0;
   overflow-y: auto;
-  transition: transform 0.3s ease;
-  width: 250px;
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
   z-index: 999;
 }
 
 /* Content beside sidebar */
-#mainContent {
-  margin-left: 150px;
+.main-content {
+  flex: 1;
   padding: 20px;
-  width: calc(100% - 250px);
-  height: calc(100vh - 56px);
   overflow-y: auto;
+  max-height: calc(100vh - 56px);
 }
 
-/* Hide sidebar on small screens when toggled off */
-.sidebar-hidden #sidebarWrapper {
+/* Hide sidebar if toggled off */
+.sidebar-hidden .sidebar-area {
   display: none;
 }
 
-.sidebar-hidden #mainContent {
-  margin-left: 0;
+.sidebar-hidden .main-content {
   width: 100%;
 }
 
-/* 📱 Responsive Layout for Small Screens */
+/* 📱 Responsive for small screens */
 @media screen and (max-width: 768px) {
-  #layoutWrapper {
+  .layout-body {
     flex-direction: column;
-    padding-top: 56px;
   }
 
-  #sidebarWrapper {
+  .sidebar-area {
     width: 100%;
-  }
-
-  #sidebar {
+    height: auto;
     position: relative;
     top: 0;
-    width: 100%;
-    height: auto;
-    transform: none !important;
   }
 
-  #mainContent {
-    margin-left: 0;
+  .main-content {
     width: 100%;
-    height: auto;
+    max-height: none;
     overflow-y: visible;
   }
 }
