@@ -20,7 +20,7 @@ import EditPayment from "./components/paymets/EditPayment";
 import FilterStudentsBalance from "./components/paymets/filterBalance";
 import StudentPaymentStatement from "./components/paymets/StudentPaymentStatement";
 import ViewPayments from "./components/paymets/ViewPayments";
-import AddRemedialPayment from "./components/remedialPayment/AddRemedialpayment";
+import AddRemedialPayment from "./components/remedialPayment/AddRemedialPayment";
 import EditRemedialPayment from "./components/remedialPayment/EditRemedialPayment";
 import FilterRemedialBalance from "./components/remedialPayment/filterRemedialBalance";
 import RemedialPaymentStatement from "./components/remedialPayment/remedialPaymentStatement";
