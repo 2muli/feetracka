@@ -4,13 +4,15 @@ html, body {
   padding: 0;
   height: 100%;
   font-family: Arial, sans-serif;
+  overflow: hidden; /* prevent double scrollbars */
 }
 
 /* Root container for Layout */
 .layout-root {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  height: 100vh; /* fill entire viewport */
+  overflow: hidden;
 }
 
 /* Fixed navbar */
@@ -26,7 +28,8 @@ html, body {
   display: flex;
   flex: 1;
   padding-top: 56px; /* adjust for fixed navbar */
-  min-height: 0;
+  height: 100%;
+  overflow: hidden;
 }
 
 /* Sidebar styling */
@@ -46,7 +49,7 @@ html, body {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
-  max-height: calc(100vh - 56px);
+  height: calc(100vh - 56px); /* ensure scroll works inside this */
 }
 
 /* Hide sidebar if toggled off */
@@ -62,6 +65,7 @@ html, body {
 @media screen and (max-width: 768px) {
   .layout-body {
     flex-direction: column;
+    overflow: auto;
   }
 
   .sidebar-area {
@@ -73,9 +77,10 @@ html, body {
 
   .main-content {
     width: 100%;
+    height: auto;
     max-height: none;
-    overflow-y: visible;
     overflow-y: auto;
     overflow-x: auto;
   }
 }
+
