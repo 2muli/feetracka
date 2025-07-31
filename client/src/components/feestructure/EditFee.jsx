@@ -5,13 +5,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 // Fetch fee record by ID
 const fetchFeeById = async (id) => {
-  const res = await axios.get(`http://localhost:8800/server/fees/${id}`);
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/fees/${id}`);
   return res.data;
 };
 
 // Update fee record
 const updateFee = async ({ id, updatedFee }) => {
-  const res = await axios.put(`http://localhost:8800/server/fees/updateFee/${id}`, updatedFee);
+  const res = await axios.put(`${import.meta.env.VITE_API_URL}/server/fees/updateFee/${id}`, updatedFee);
   return res.data;
 };
 

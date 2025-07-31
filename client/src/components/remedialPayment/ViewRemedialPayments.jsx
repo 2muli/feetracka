@@ -18,7 +18,7 @@ const ViewRemedialPayments = () => {
   } = useQuery({
     queryKey: ['remedialPayments'],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:8800/server/remedialPayments");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/remedialPayments `);
       console.log("payments", res.data);
       return res.data;
     },
@@ -33,7 +33,7 @@ const ViewRemedialPayments = () => {
   } = useQuery({
     queryKey: ['balance'],
     queryFn: async () => {
-      const res = await axios.get("http://localhost:8800/server/remedialPayments/getRemedialBalance");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/remedialPayments/getRemedialBalance`);
       return res.data;
     },
   });
@@ -42,7 +42,7 @@ const ViewRemedialPayments = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this payment?")) return;
     try {
-      await axios.delete(`http://localhost:8800/server/remedialPayments/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/server/remedialPayments/${id}`);
       
       toast.success("Payment deleted successfully");
       refetchPayments(); // Refresh data

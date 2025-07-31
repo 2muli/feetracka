@@ -5,14 +5,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 // Fetch fee record by ID
-const fetchFeeById = async (id) => {
-  const res = await axios.get(`http://localhost:8800/server/remedials/${id}`);
+const fetchRemedialById = async (id) => {
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/remedials/${id}`);
   return res.data;
 };
 
 // Update fee record
-const updateFee = async ({ id, updatedFee }) => {
-  const res = await axios.put(`http://localhost:8800/server/remedials/updateRemedial/${id}`, updatedFee);
+const updateRemedial = async ({ id, updatedFee }) => {
+  const res = await axios.put(`${import.meta.env.VITE_API_URL}/server/remedials/updateRemedial/${id}`, updatedFee);
   return res.data;
 };
 
@@ -33,7 +33,7 @@ const EditRemedial = () => {
     error,
   } = useQuery({
     queryKey: ["fee", id],
-    queryFn: () => fetchFeeById(id),
+    queryFn: () => fetchRemedialById(id),
     enabled: !!id,
   });
 
@@ -54,7 +54,7 @@ const EditRemedial = () => {
     isError: isUpdateError,
     error: updateError,
   } = useMutation({
-    mutationFn: updateFee,
+    mutationFn: updateRemedial,
     onSuccess: () => {
       toast.success("Fee updated successfully!");
       navigate("/remedial");

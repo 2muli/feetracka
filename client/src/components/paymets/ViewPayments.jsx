@@ -12,7 +12,7 @@ const ViewPayments = () => {
   // 🧠 Fetch Payments
   const fetchPayments = async () => {
     try {
-      const res = await axios.get("http://localhost:8800/server/payments");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/payments`);
       setPayments(res.data);
     } catch (err) {
       console.error("Error fetching payments:", err);
@@ -25,7 +25,7 @@ const ViewPayments = () => {
 
   // 💸 Fetch Overall Balance
   const fetchBalance = async () => {
-    const res = await axios.get('http://localhost:8800/server/payments/getBalance');
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/payments/getBalance`);
     return res.data;
   };
 
@@ -49,7 +49,7 @@ const ViewPayments = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this payment?")) return;
     try {
-      await axios.delete(`http://localhost:8800/server/payments/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/server/payments/${id}`);
       toast.success("Payment deleted successfully");
       fetchPayments(); // refresh
     } catch (err) {

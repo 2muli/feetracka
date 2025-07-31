@@ -10,7 +10,7 @@ const ViewFee = () => {
 
   const fetchFees = async () => {
     try {
-      const res = await axios.get("http://localhost:8800/server/fees");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/fees`);
       setFees(res.data);
     } catch (err) {
       console.error("Failed to fetch fees:", err);
@@ -26,7 +26,7 @@ const ViewFee = () => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:8800/server/fees/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/server/fees/${id}`);
       toast.success("Fee deleted successfully!");
       fetchFees();
     } catch (err) {

@@ -6,13 +6,13 @@ import { toast } from "react-toastify";
 
 // Fetch payment by ID
 const fetchPaymentById = async (id) => {
-  const res = await axios.get(`http://localhost:8800/server/remedialPayments/${id}`);
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/remedialPayments/${id}`);
   return res.data;
 };
 
 // Update payment
 const updatePayment = async ({ id, updatedPayment }) => {
-  const res = await axios.put(`http://localhost:8800/server/remedialPayments/updateRemedialPayment/${id}`, updatedPayment);
+  const res = await axios.put(`${import.meta.env.VITE_API_URL}/server/remedialPayments/updateRemedialPayment/${id}`, updatedPayment);
   return res.data;
 };
 

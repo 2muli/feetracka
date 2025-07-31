@@ -2,7 +2,6 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-
 const ViewRemedial = () => {
   const [fees, setFees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -10,7 +9,7 @@ const ViewRemedial = () => {
 
   const fetchFees = async () => {
     try {
-      const res = await axios.get("http://localhost:8800/server/remedials");
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/remedials`);
       console.log(res.data)
       setFees(res.data);
     } catch (err) {
@@ -27,7 +26,7 @@ const ViewRemedial = () => {
     if (!confirmDelete) return;
 
     try {
-      await axios.delete(`http://localhost:8800/server/remedials/${id}`);
+      await axios.delete(`${import.meta.env.VITE_API_URL}/server/remedials/${id}`);
       toast.success("Fee deleted successfully!");
       fetchFees();
     } catch (err) {

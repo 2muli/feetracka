@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const fetchClasses = async () => {
   try {
-    const res = await axios.get("http://localhost:8800/server/students/classes");
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/students/classes`);
     return res.data;
   } catch (err) {
     console.error("Error fetching classes:", err);
@@ -47,7 +47,7 @@ const AddPayment = () => {
     const fetchStudents = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8800/server/students/studentsByClass?className=${formData.class}`
+          `${import.meta.env.VITE_API_URL}/server/students/studentsByClass?className=${formData.class}`
         );
         setStudents(res.data);
       } catch (err) {
@@ -62,7 +62,7 @@ const AddPayment = () => {
   const mutation = useMutation({
     mutationFn: async () => {
       const res = await axios.post(
-        "http://localhost:8800/server/payments/addPayment",
+        `${import.meta.env.VITE_API_URL}/server/payments/addPayment`,
         formData
       );
       return res.data;

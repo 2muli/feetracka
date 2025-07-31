@@ -7,14 +7,14 @@ import "react-toastify/dist/ReactToastify.css";
 
 // 🔍 Fetch student by ID
 const fetchStudentById = async (id) => {
-  const res = await axios.get(`http://localhost:8800/server/students/studentById/${id}`);
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/students/studentById/${id}`);
   return res.data;
 };
 
 // 🔄 Update student API
 const updateStudent = async ({ id, updatedStudent }) => {
   const res = await axios.put(
-    `http://localhost:8800/server/students/updateStudent/${id}`,
+    `${import.meta.env.VITE_API_URL}/server/students/updateStudent/${id}`,
     updatedStudent
   );
   return res.data;

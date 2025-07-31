@@ -6,27 +6,27 @@ import { useAuth } from '../context/AuthContext';
 
 // API fetchers
 const fetchStudentCount = async () => {
-  const res = await axios.get('http://localhost:8800/server/students/studentNumber', { withCredentials: true });
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/students/studentNumber`, { withCredentials: true });
   return res.data.count;
 };
 
 const fetchTodayPayment = async () => {
-  const res = await axios.get('http://localhost:8800/server/payments/todayPayments', { withCredentials: true });
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/payments/todayPayments`, { withCredentials: true });
   return res.data.totalPaidToday;
 };
 
 const fetchTotalPayment = async () => {
-  const res = await axios.get('http://localhost:8800/server/payments/getTotalPayments', { withCredentials: true });
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/payments/getTotalPayments`, { withCredentials: true });
   return res.data.totalPaid;
 };
 
 const fetchBalance = async () => {
-  const res = await axios.get('http://localhost:8800/server/payments/getBalance', { withCredentials: true });
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/payments/getBalance`, { withCredentials: true });
   return res.data.balance;
 };
 
 const fetchLatestStudents = async () => {
-  const res = await axios.get('http://localhost:8800/server/students/getLatestStudents', { withCredentials: true });
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/students/getLatestStudents`, { withCredentials: true });
   return res.data;
 };
 

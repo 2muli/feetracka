@@ -15,7 +15,7 @@ const RemedialPaymentStatement = () => {
     const fetchPaymentsAndFees = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8800/server/remedialPayments/getRemedialPaymentByStudent/${studentId}`
+          `${import.meta.env.VITE_API_URL}/server/remedialPayments/getRemedialPaymentByStudent/${studentId}`
         );
         const data = res.data;
         console.log("All data", data);
@@ -50,7 +50,7 @@ const RemedialPaymentStatement = () => {
       for (const t of terms) {
         try {
           const res = await axios.get(
-            `http://localhost:8800/server/remedials/byClass/${t}`
+            `${import.meta.env.VITE_API_URL}/server/remedials/byClass/${t}`
           );
           console.log("All data", res.data);
           feeMap[t] = res.data[0]?.Amount_paid || 0;

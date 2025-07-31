@@ -26,7 +26,7 @@ const AddRemedial = () => {
     setIsSubmitting(true);
 
     try {
-      await axios.post("http://localhost:8800/server/remedials/", formData);
+      await axios.post(`${import.meta.env.VITE_API_URL}/server/remedials/`, formData);
       toast.success("Fee record added successfully");
       navigate("/remedial"); // Redirect to view fees page
     } catch (err) {

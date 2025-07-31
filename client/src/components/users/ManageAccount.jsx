@@ -51,7 +51,7 @@ const ManageAccount = () => {
 
     try {
       const res = await axios.put(
-        `http://localhost:8800/server/users/updateUser/${userDetails.user?.id}`,
+        `${import.meta.env.VITE_API_URL}/server/users/updateUser/${userDetails.user?.id}`,
         updatedData,
         { withCredentials: true }
       );

@@ -18,7 +18,7 @@ const ChangePassword = () => {
   const mutation = useMutation({
     mutationFn: async () => {
       const res = await axios.put(
-        `http://localhost:8800/server/users/reset-password/${token}`,
+        `${import.meta.env.VITE_API_URL}/server/users/reset-password/${token}`,
         {
           newPassword: formData.newPassword, // must match backend's expected field
         }

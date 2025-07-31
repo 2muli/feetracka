@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 
 const fetchClasses = async () => {
   try {
-    const res = await axios.get("http://localhost:8800/server/students/classes");
+    const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/students/classes`);
     return res.data;
   } catch (err) {
     console.error("Error fetching classes:", err);
@@ -38,7 +38,7 @@ const AddRemedialPayment = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const res = await axios.get(`http://localhost:8800/server/students/searchStudents`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/students/searchStudents`);
         setStudents(res.data);
       } catch (err) {
         console.error("Failed to fetch students", err);
@@ -55,7 +55,7 @@ const AddRemedialPayment = () => {
     const fetchStudents = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8800/server/students/studentsByClass?className=${formData.class}`
+          `${import.meta.env.VITE_API_URL}/server/students/studentsByClass?className=${formData.class}`
         );
         setStudents(res.data);
       } catch (err) {
@@ -71,7 +71,7 @@ const AddRemedialPayment = () => {
   useEffect(() => {
     const fetchTerms = async () => {
       try {
-        const res = await axios.get("http://localhost:8800/server/remedials/terms/list");
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/remedials/terms/list`);
         setTerms(res.data);
       } catch (err) {
         console.error("Failed to fetch terms", err);
@@ -86,7 +86,7 @@ const AddRemedialPayment = () => {
       const fetchSummary = async () => {
         try {
           const res = await axios.get(
-            `http://localhost:8800/server/students/${formData.studentId}/payment-summary?term=${formData.term}`
+            `${import.meta.env.VITE_API_URL}/server/students/${formData.studentId}/payment-summary?term=${formData.term}`
           );
           setSummary(res.data);
         } catch (err) {
@@ -118,7 +118,7 @@ const AddRemedialPayment = () => {
     };
 
     try {
-      await axios.post("http://localhost:8800/server/remedialPayments/addRemedialPayment", payload);
+      await axios.post(`${import.meta.env.VITE_API_URL}/server/remedialPayments/addRemedialPayment`, payload);
       toast.success("Remedial payment added successfully");
       navigate("/viewremedialpayments");
     } catch (error) {

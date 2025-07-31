@@ -29,7 +29,7 @@ const AddFees = () => {
     setError("");
 
     try {
-      await axios.post("http://localhost:8800/server/fees/addFee", formData);
+      await axios.post(`${import.meta.env.VITE_API_URL}/server/fees/addFee`, formData);
       toast.success("Fee record added successfully");
       navigate("/viewfee"); // Redirect to view fees page
     } catch (err) {

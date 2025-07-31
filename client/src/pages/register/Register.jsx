@@ -24,7 +24,7 @@ const Register = () => {
   const mutation = useMutation({
     mutationFn: async (userData) => {
       const response = await axios.post(
-        "http://localhost:8800/server/users/register",
+        `${import.meta.env.VITE_API_URL}/server/users/register`,
         userData,
         { withCredentials: true }
       );

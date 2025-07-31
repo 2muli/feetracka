@@ -19,7 +19,7 @@ const ChangePassword = () => {
 
   const mutation = useMutation({
     mutationFn: (formData) =>
-      axios.post("http://localhost:8800/server/users/changePassword", formData, {
+      axios.post(`${import.meta.env.VITE_API_URL}/server/users/changePassword`, formData, {
         withCredentials: true,
       }),
     onSuccess: (res) => {

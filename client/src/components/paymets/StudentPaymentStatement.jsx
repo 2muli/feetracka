@@ -9,13 +9,13 @@ const StudentPaymentStatement = () => {
   const [studentInfo, setStudentInfo] = useState(null);
   const [error, setError] = useState(null);
   const [studentClass, setStudentClass] = useState(null);
-  const [termFeeMap, setTermFeeMap] = useState({}); // ✅ Added missing state
+  const [termFeeMap, setTermFeeMap] = useState({}); // 
 
   useEffect(() => {
     const fetchPaymentsAndFees = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8800/server/payments/getStudentPayments/${studentId}`
+          `${import.meta.env.VITE_API_URL}/server/payments/getStudentPayments/${studentId}`
         );
         const data = res.data;
         console.log("data", data);
@@ -50,7 +50,7 @@ const StudentPaymentStatement = () => {
       for (const t of terms) {
         try {
           const res = await axios.get(
-            `http://localhost:8800/server/fees/byClass/${studentClass}/${t}`
+            `${import.meta.env.VITE_API_URL}/server/fees/byClass/${studentClass}/${t}`
           );
           feeMap[t] = res.data[0]?.Amount_paid || 0;
         } catch (err) {
@@ -59,7 +59,7 @@ const StudentPaymentStatement = () => {
         }
       }
 
-      setTermFeeMap(feeMap); // ✅ Correct usage
+      setTermFeeMap(feeMap); // 
     };
 
     fetchAllTermFees();

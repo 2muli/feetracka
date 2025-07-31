@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import CookieExpire from "./CookieExpire";
 
-axios.defaults.baseURL = "http://localhost:8800/server";
+axios.defaults.baseURL = `${import.meta.env.VITE_API_URL}/server`;
 axios.defaults.withCredentials = true;
 
 const AuthProvider = ({ children }) => {

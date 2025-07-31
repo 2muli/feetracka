@@ -11,7 +11,7 @@ const ResetPassword = () => {
   const mutation = useMutation({
     mutationFn: async () => {
       const res = await axios.post(
-        `http://localhost:8800/server/resetPassword/send-reset-email`, // ✅ updated endpoint
+        `${import.meta.env.VITE_API_URL}/server/resetPassword/send-reset-email`, // ✅ updated endpoint
         formData
       );
       return res.data;

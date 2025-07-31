@@ -18,7 +18,7 @@ const AddStudent = () => {
 
   const { mutate, isLoading, isError, isSuccess, error, data } = useMutation({
     mutationFn: async (studentData) => {
-      const res = await axios.post("http://localhost:8800/server/students/addStudent", studentData);
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/server/students/addStudent`, studentData);
       return res.data;
     },
     onSuccess: () => {
