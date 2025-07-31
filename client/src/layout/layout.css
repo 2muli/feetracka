@@ -75,5 +75,7 @@ html, body {
     width: 100%;
     max-height: none;
     overflow-y: visible;
+    overflow-y: auto;
+    overflow-x: auto;
   }
 }
