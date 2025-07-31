@@ -1,8 +1,8 @@
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import dotenv from "dotenv";
 import express from "express";
 import http from "http";
-import dotenv from "dotenv";
-import cors from "cors";
-import cookieParser from "cookie-parser";
 import { db } from "./connectDB.js";
 
 // Route Imports
@@ -14,75 +14,108 @@ import resetPasswordRoutes from "./routes/resetPassword.js";
 import studentRoutes from "./routes/students.js";
 import userRoutes from "./routes/users.js";
 
+// Load environment variables
 dotenv.config();
 
+// Initialize app and server
 const app = express();
 const server = http.createServer(app);
 
+// Configure allowed origins
 const allowedOrigins = [
   "http://localhost:5173",
   "https://feetracka.vercel.app",
+  "https://feetracka-*.vercel.app", // Wildcard for all Vercel preview URLs
   "https://feetracka-muli-muthuis-projects.vercel.app",
-  "https://feetracka-q54m8di4k-muli-muthuis-projects.vercel.app",
-];
+  "https://feetracka-pmihxfav4-muli-muthuis-projects.vercel.app",
+  process.env.FRONTEND_URL
+].filter(Boolean); // Remove any undefined values
 
 // Enhanced CORS configuration
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      // Check if the origin is in the allowed list or matches a wildcard pattern
+      const isAllowed = allowedOrigins.some(allowedOrigin => {
+        if (allowedOrigin.includes('*')) {
+          const regex = new RegExp(allowedOrigin.replace('*', '.*'));
+          return regex.test(origin);
+        }
+        return allowedOrigin === origin;
+      });
+
+      if (isAllowed) {
+        callback(null, true);
+      } else {
+        console.warn(`Blocked by CORS: ${origin}`);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-access-token"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-Requested-With",
+      "Accept",
+      "Origin",
+      "Access-Control-Request-Method",
+      "Access-Control-Request-Headers"
+    ],
+    exposedHeaders: ["Set-Cookie", "Authorization"],
+    optionsSuccessStatus: 200
   })
 );
 
-app.use(cookieParser(process.env.COOKIE_SECRET || 'default-secret'));
+// Handle preflight requests
+app.options('*', cors());
+
+// Middleware
+app.use(cookieParser());
 app.use(express.json());
 
-// Public routes (no auth required)
-app.use("/server/users", userRoutes); // Move before auth middleware
-
-// Auth middleware for protected routes
-app.use((req, res, next) => {
-  // Skip auth for certain routes
-  if (req.path.startsWith('/server/users/login') || 
-      req.path.startsWith('/server/users/register')) {
-    return next();
-  }
-  
-  const token = req.cookies?.token || req.headers['x-access-token'];
-  if (!token) {
-    return res.status(401).json({ success: false, error: "Unauthorized - No token provided" });
-  }
-  next();
+// Basic health route
+app.get("/", (req, res) => {
+  res.send("✅ Backend is running successfully on Render!");
 });
 
-// Protected routes
+// Routes
 app.use("/server/fees", feeRoutes);
 app.use("/server/remedials", remedialRoutes);
 app.use("/server/payments", paymentRoutes);
 app.use("/server/students", studentRoutes);
 app.use("/server/remedialPayments", remedialPaymentRoutes);
+app.use("/server/users", userRoutes);
 app.use("/server/resetPassword", resetPasswordRoutes);
 
-// Error handling
+// Error handling middleware
 app.use((err, req, res, next) => {
+  if (err.message === 'Not allowed by CORS') {
+    return res.status(403).json({
+      success: false,
+      error: 'CORS policy blocked this request'
+    });
+  }
   console.error('Server Error:', err);
-  res.status(err.status || 500).json({
+  res.status(500).json({
     success: false,
-    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error'
+    error: 'Internal Server Error'
   });
 });
 
-// MySQL Connection
+// Connect DB
 db.connect((err) => {
   if (err) {
-    console.error("❌ MySQL connection failed:", err.message);
+    console.error("❌ Failed to connect to MySQL:", err.message);
   } else {
     console.log("✅ Connected to MySQL database.");
   }
 });
 
+// Start Server
 const PORT = process.env.PORT || 8800;
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
