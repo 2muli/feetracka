@@ -7,6 +7,7 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import App from "./App";
 import AuthProvider from "./context/AuthProvider";
+import "./App.css";
 
 const queryClient = new QueryClient();
 
