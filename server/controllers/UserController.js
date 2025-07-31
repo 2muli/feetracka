@@ -36,65 +36,64 @@ export const getUsers = async (req, res) => {
   }
 };
 
+// 🟢 2. ADD USER
 export const Register = async (req, res) => {
+  const {
+    firstName,
+    secondName = null,
+    lastName,
+    email,
+    phone,
+    password,
+  } = req.body;
+ const role="clerk";
+  // Validate required fields
+  if (!firstName || !lastName || !email || !phone || !password) {
+    return errorResponse(res, 400, "Required fields are missing");
+  }
   try {
-    const { firstName, lastName, email, phone, password } = req.body;
+    // Check for existing email
+    const existingEmail = await query("SELECT id FROM users WHERE email = ?", [email]);
+    if (existingEmail.length > 0) {
+      return errorResponse(res, 409, "Email already exists");
+    }
 
-    // Check if user exists
-    const [existingUser] = await db.query(
-      "SELECT * FROM users WHERE email = ? OR phone = ?",
-      [email, phone]
-    );
-
-    if (existingUser.length > 0) {
-      return res.status(400).json({
-        success: false,
-        error: "User with this email or phone already exists"
-      });
+    // Check for existing phone
+    const existingPhone = await query("SELECT id FROM users WHERE phone = ?", [phone]);
+    if (existingPhone.length > 0) {
+      return errorResponse(res, 409, "Phone number already exists");
     }
 
     // Hash password
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const createdAt = new Date();
 
     // Insert new user
-    const [result] = await db.query(
-      "INSERT INTO users (firstName, lastName, email, phone, password) VALUES (?, ?, ?, ?, ?)",
-      [firstName, lastName, email, phone, hashedPassword]
+    const result = await query(
+      `INSERT INTO users 
+      (first_name, second_name, last_name, email, phone, role, password, createdAt) 
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+      [firstName, secondName, lastName, email, phone, role, hashedPassword, createdAt]
     );
 
-    // Generate token
-    const token = jwt.sign(
-      { id: result.insertId },
-      process.env.JWT_SECRET,
-      { expiresIn: "30d" }
-    );
-
-    // Set cookie
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
-    });
-
-    res.status(201).json({
-      success: true,
-      message: "Registration successful",
+    // Return success with new user data (excluding password)
+    return successResponse(res, 201, {
+      message: "User added successfully",
       user: {
         id: result.insertId,
         firstName,
+        secondName,
         lastName,
         email,
-        phone
+        phone,
+        role,
+        createdAt
       }
     });
-  } catch (err) {
-    console.error("Registration error:", err);
-    res.status(500).json({
-      success: false,
-      error: "Registration failed. Please try again."
-    });
+  } catch (error) {
+    console.error("Error adding user:", error);
+    return errorResponse(res, 500, "Internal server error");
   }
 };
 // 🟢 3. LOGIN (Fixed implementation)
