@@ -23,7 +23,7 @@ import ViewPayments from "./components/paymets/ViewPayments";
 import AddRemedialPayment from "./components/remedialPayment/AddRemedialPayment";
 import EditRemedialPayment from "./components/remedialPayment/EditRemedialPayment";
 import FilterRemedialBalance from "./components/remedialPayment/filterRemedialBalance";
-import RemedialPaymentStatement from "./components/remedialPayment/remedialPaymentStatement";
+import RemedialPaymentStatement from "./components/remedialPayment/RemedialPaymentStatement";
 import ViewRemedialPayments from "./components/remedialPayment/ViewRemedialPayments";
 import AddRemedial from "./components/remedialStructure/AddRemedial";
 import EditRemedial from "./components/remedialStructure/EditRemedial";
