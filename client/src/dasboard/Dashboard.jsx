@@ -32,7 +32,7 @@ const fetchLatestStudents = async () => {
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, loading } = useAuth();
+  const { isAuthenticated, loading,userDetails } = useAuth();
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -80,7 +80,12 @@ if (!isAuthenticated) {
 
       <main id="layoutSidenav_content" className="w-100">
         <div className="container-fluid px-4">
-          <h1 className="mt-4">Dashboard</h1>
+        <h1 className="mt-4">
+  Welcome{" "}
+  {userDetails?.user?.firstName && userDetails?.user?.lastName
+    ? `${userDetails.user.firstName} ${userDetails.user.lastName}`
+    : "Malioni Clerk"}
+</h1>
 
           {/* Stats Cards */}
           <div className="row">

@@ -23,6 +23,7 @@ import ViewPayments from "./components/paymets/ViewPayments";
 import AddRemedialPayment from "./components/remedialPayment/AddRemedialpayment";
 import EditRemedialPayment from "./components/remedialPayment/EditRemedialPayment";
 import FilterRemedialBalance from "./components/remedialPayment/filterRemedialBalance";
+import RemedialPaymentStatement from "./components/remedialPayment/remedialPaymentStatement";
 import ViewRemedialPayments from "./components/remedialPayment/ViewRemedialPayments";
 import AddRemedial from "./components/remedialStructure/AddRemedial";
 import EditRemedial from "./components/remedialStructure/EditRemedial";
@@ -82,6 +83,7 @@ import Register from "./pages/register/Register";
           <Route path="/editfee/:id" element={<EditFee />} />
           <Route path="/viewfee" element={<ViewFee />} />
           <Route path="/payment-statement/:studentId" element={<StudentPaymentStatement/>}/>
+          <Route path="/remedial-payment-statement/:studentId"element={<RemedialPaymentStatement/>}/>
           <Route path="/balanceperclass" element={<BalancePerClass />} />
           <Route path="/totalbalance" element={<TotalBalance />} />
           <Route path="/totalfeepaid" element={<TotalFeePaid />} />

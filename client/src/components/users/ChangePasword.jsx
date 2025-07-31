@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
 const ChangePassword = () => {
@@ -22,11 +23,11 @@ const ChangePassword = () => {
         withCredentials: true,
       }),
     onSuccess: (res) => {
-      setSuccess(res.data.message || "Password updated successfully.");
+      toast.success(res.data.message || "Password updated successfully.");
       setForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
     },
     onError: (err) => {
-      setError(err.response?.data?.error || "Something went wrong.");
+      toast.error(err.response?.data?.error || "Something went wrong.");
     },
   });
 
@@ -58,8 +59,8 @@ const ChangePassword = () => {
                 </h3>
               </div>
               <div className="card-body">
-                {error && <div className="alert alert-danger">{error}</div>}
-                {success && <div className="alert alert-success">{success}</div>}
+                {error && toast.error(error)}
+                {success && toast.success(success)}
 
                 <form onSubmit={handleSubmit}>
                   <div className="form-floating mb-3">

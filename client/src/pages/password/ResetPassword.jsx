@@ -2,10 +2,10 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ResetPassword = () => {
   const [formData, setFormData] = useState({ email: "" });
-  const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const mutation = useMutation({
@@ -17,13 +17,13 @@ const ResetPassword = () => {
       return res.data;
     },
     onSuccess: () => {
-      alert("Password reset email sent. Please check your inbox.");
+      toast.success("Password reset email sent. Please check your inbox.");
       navigate("/login");
     },
     onError: (err) => {
       const msg =
         err.response?.data?.error || err.response?.data?.message || "Something went wrong.";
-      setError(msg);
+      toast.error(msg);
     },
   });
 
@@ -33,7 +33,6 @@ const ResetPassword = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError(null);
     mutation.mutate();
   };
 
@@ -50,7 +49,6 @@ const ResetPassword = () => {
                 <div className="small mb-3 text-muted">
                   Enter your email address and we’ll send you a password reset link.
                 </div>
-                {error && <div className="alert alert-danger">{error}</div>}
                 <form onSubmit={handleSubmit}>
                   <div className="form-floating mb-3">
                     <input

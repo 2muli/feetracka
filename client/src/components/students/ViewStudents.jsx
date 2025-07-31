@@ -3,6 +3,7 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
 const ViewStudents = () => {
@@ -29,11 +30,11 @@ const ViewStudents = () => {
     if (!window.confirm("Are you sure you want to delete this student?")) return;
     try {
       await axios.delete(`/students/${id}`);
-      alert("Student deleted successfully!");
+      toast.success("Student deleted successfully!");
       fetchStudentsByClass(); // refetch after delete
     } catch (err) {
       console.error("Delete failed:", err);
-      alert("Failed to delete student");
+      toast.error("Failed to delete student");
     }
   };
   const handleExportPDF = () => {

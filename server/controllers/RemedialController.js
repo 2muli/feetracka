@@ -114,12 +114,23 @@ export const deleteRemedial = async (req, res) => {
   }
 };
 
-export const getTerms = async (req, res) => {
+export const getRemedialTerms = async (req, res) => {
   try {
     const [terms] = await db.query("SELECT DISTINCT term FROM remedial");
     res.status(200).json(terms.map(row => row.term));
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch terms" });
+  }
+};
+export const getRemedialByTerm = async (req, res) => {
+  const { term } = req.params;
+  if (!term) return res.status(400).json({ error: "Term is required" });
+  try {
+      const [fees] = await db.query("SELECT * FROM remedial WHERE term = ?", [term]);
+      res.status(200).json(fees);
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Internal server error" });
   }
 };

@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ViewRemedialPayments = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,6 +19,7 @@ const ViewRemedialPayments = () => {
     queryKey: ['remedialPayments'],
     queryFn: async () => {
       const res = await axios.get("http://localhost:8800/server/remedialPayments");
+      console.log("payments", res.data);
       return res.data;
     },
   });
@@ -41,11 +43,12 @@ const ViewRemedialPayments = () => {
     if (!window.confirm("Are you sure you want to delete this payment?")) return;
     try {
       await axios.delete(`http://localhost:8800/server/remedialPayments/${id}`);
-      alert("Payment deleted successfully");
+      
+      toast.success("Payment deleted successfully");
       refetchPayments(); // Refresh data
     } catch (err) {
       console.error("Delete error:", err);
-      alert("Failed to delete payment");
+      toast.error("Failed to delete payment");
     }
   };
 
@@ -116,7 +119,7 @@ const ViewRemedialPayments = () => {
                     >
                       Delete
                     </button>
-                    <Link to={`/editremedialpayment/${p.id}`}>
+                    <Link to={`/remedial-payment-statement/${p.student_id}`}>
                       <button className="btn btn-info btn-sm">Payment Statement</button>
                     </Link>
                   </td>

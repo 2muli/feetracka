@@ -2,14 +2,16 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-// 👉 Fetch student by ID
+// 🔍 Fetch student by ID
 const fetchStudentById = async (id) => {
   const res = await axios.get(`http://localhost:8800/server/students/studentById/${id}`);
   return res.data;
 };
 
-// 👉 Update student
+// 🔄 Update student API
 const updateStudent = async ({ id, updatedStudent }) => {
   const res = await axios.put(
     `http://localhost:8800/server/students/updateStudent/${id}`,
@@ -22,7 +24,6 @@ const EditStudent = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // ✅ Local state for form
   const [formData, setFormData] = useState({
     firstName: "",
     secondName: "",
@@ -33,19 +34,19 @@ const EditStudent = () => {
     parentContact: "",
   });
 
-  // ✅ Fetch student data
+  // ✅ Fetch student
   const {
     data: student,
-    isLoading: isFetching,
-    isError: isFetchError,
-    error: fetchError,
+    isLoading,
+    isError,
+    error,
   } = useQuery({
     queryKey: ["student", id],
     queryFn: () => fetchStudentById(id),
     enabled: !!id,
   });
 
-  // ✅ Populate form after fetch
+  // ✅ Populate form on data load
   useEffect(() => {
     if (student) {
       setFormData({
@@ -60,16 +61,16 @@ const EditStudent = () => {
     }
   }, [student]);
 
-  // ✅ Handle form changes
+  // ✅ Handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "admissionNo" ? parseInt(value) || "" : value,
+      [name]: value,
     }));
   };
 
-  // ✅ Mutation to update student
+  // ✅ Update mutation
   const {
     mutate,
     isLoading: isUpdating,
@@ -78,12 +79,16 @@ const EditStudent = () => {
   } = useMutation({
     mutationFn: updateStudent,
     onSuccess: () => {
-      alert("Student updated successfully!");
+      toast.success("Student updated successfully!");
       navigate("/viewstudents");
     },
+    onError: (error) => {
+      toast.error(
+        (error?.response?.data?.error || "Unknown error")
+      );
+    },
   });
-
-  // ✅ Handle form submission
+  // ✅ Form submit handler
   const handleSubmit = (e) => {
     e.preventDefault();
     mutate({ id, updatedStudent: formData });
@@ -94,16 +99,17 @@ const EditStudent = () => {
       <div className="container-fluid px-4">
         <h1 className="mt-4">Edit Student</h1>
 
-        {isFetching && <p>Loading student data...</p>}
+        {isLoading && <p>Loading student data...</p>}
 
-        {isFetchError && (
+        {isError && (
           <div className="alert alert-danger">
-            Failed to load: {fetchError?.message}
+            Failed to load: {error?.message}
           </div>
         )}
 
-        {!isFetching && !isFetchError && (
+        {!isLoading && !isError && (
           <form onSubmit={handleSubmit}>
+            {/* Input fields */}
             {["firstName", "secondName", "lastName", "parentName", "parentContact"].map(
               (field) => (
                 <div className="form-group mb-2" key={field}>
@@ -120,7 +126,7 @@ const EditStudent = () => {
               )
             )}
 
-            {/* Admission No */}
+            {/* Admission Number */}
             <div className="form-group mb-2">
               <label>Admission Number</label>
               <input
@@ -135,38 +141,33 @@ const EditStudent = () => {
 
             {/* Class Dropdown */}
             <div className="form-group mb-2">
-  <label>Class</label>
-  <select
-    className="form-control"
-    name="className"
-    value={formData.className}
-    onChange={handleChange}
-    required
-  >
-    <option value="" disabled>
-      --Select class--
-    </option>
-    <option value="1">Form 1</option>
-    <option value="2">Form 2</option>
-    <option value="3">Form 3</option>
-    <option value="4">Form 4</option>
-  </select>
-</div>
+              <label>Class</label>
+              <select
+                className="form-control"
+                name="className"
+                value={formData.className}
+                onChange={handleChange}
+                required
+              >
+                <option value="" disabled>
+                  --Select class--
+                </option>
+                <option value="Form 1">Form 1</option>
+                <option value="Form 2">Form 2</option>
+                <option value="Form 3">Form 3</option>
+                <option value="Form 4">Form 4</option>
+              </select>
+            </div>
 
+            {/* Submit button */}
             <button
               type="submit"
               className="btn btn-success mt-3"
               disabled={isUpdating}
             >
-              {isUpdating ? "Updating..." : "Update"}
+              {isUpdating ? "Updating..." : "Update Student"}
             </button>
           </form>
-        )}
-
-        {isUpdateError && (
-          <div className="alert alert-danger mt-3">
-            {updateError?.response?.data?.error || "Update failed"}
-          </div>
         )}
       </div>
     </main>

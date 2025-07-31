@@ -3,12 +3,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 import "./login.css";
 
 const Login = () => {
   const [inputs, setInputs] = useState({ email: "", password: "" });
-  const [error, setError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -18,12 +18,12 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     try {
       await login(inputs);
+      toast.success("Login successful");
       navigate("/dashboard");
     } catch (err) {
-      setError(err.message);
+      toast.error(err.message);
     }
   };
 
@@ -41,9 +41,7 @@ const Login = () => {
                   Welcome back! Please enter your credentials to continue.
                 </h5>
 
-                {error && <div className="alert alert-danger">{error}</div>}
-
-                <form onSubmit={handleSubmit}>
+                  <form onSubmit={handleSubmit}>
                   <div className="form-floating mb-3">
                     <input
                       name="email"

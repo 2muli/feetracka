@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ChangePassword = () => {
   const { token } = useParams();
@@ -25,7 +26,7 @@ const ChangePassword = () => {
       return res.data;
     },
     onSuccess: () => {
-      alert("Password reset successful. Please login.");
+      toast.success("Password reset successful. Please login.");
       navigate("/login");
     },
     onError: (err) => {

@@ -1,7 +1,18 @@
+import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
+const fetchClasses = async () => {
+  try {
+    const res = await axios.get("http://localhost:8800/server/students/classes");
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching classes:", err);
+    return [];
+  }
+};
 const AddRemedialPayment = () => {
   const navigate = useNavigate();
 
@@ -11,13 +22,18 @@ const AddRemedialPayment = () => {
   const [selectedStudent, setSelectedStudent] = useState(null);
 
   const [formData, setFormData] = useState({
+    class:"",
     studentId: "",
     amountPaid: "",
     paymentDate: new Date().toISOString().split("T")[0],
     paymentMethod: "",
     term: "",
   });
-
+  const { data: classes = [], isLoading: loadingClasses } = useQuery({
+    queryKey: ["classes"],
+    queryFn: fetchClasses,
+    staleTime: 60 * 60 * 1000,
+  });
   // 🌸 Fetch students
   useEffect(() => {
     const fetchStudents = async () => {
@@ -30,13 +46,32 @@ const AddRemedialPayment = () => {
     };
     fetchStudents();
   }, []);
+  useEffect(() => {
+    if (!formData.class) {
+      setStudents([]);
+      return;
+    }
+
+    const fetchStudents = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8800/server/students/studentsByClass?className=${formData.class}`
+        );
+        setStudents(res.data);
+      } catch (err) {
+        console.error("Error fetching students:", err);
+        setStudents([]);
+      }
+    };
+
+    fetchStudents();
+  }, [formData.class]);
 
   // 🌸 Fetch terms
   useEffect(() => {
     const fetchTerms = async () => {
       try {
-        const res = await axios.get("http://localhost:8800/server/fees/terms/list");
-        console.log(res.data);
+        const res = await axios.get("http://localhost:8800/server/remedials/terms/list");
         setTerms(res.data);
       } catch (err) {
         console.error("Failed to fetch terms", err);
@@ -84,10 +119,10 @@ const AddRemedialPayment = () => {
 
     try {
       await axios.post("http://localhost:8800/server/remedialPayments/addRemedialPayment", payload);
-      alert("Remedial payment added successfully");
+      toast.success("Remedial payment added successfully");
       navigate("/viewremedialpayments");
     } catch (error) {
-      alert(error?.response?.data?.error || "Something went wrong");
+      toast.error(error?.response?.data?.error || "Something went wrong");
     }
   };
 
@@ -96,6 +131,23 @@ const AddRemedialPayment = () => {
       <div className="container-fluid px-4">
         <h2 className="mt-4">Add Remedial Payment</h2>
         <form onSubmit={handleSubmit}>
+        <div className="mb-3">
+          <label className="form-label">Class</label>
+          <select
+            className="form-control"
+            name="class"
+            value={formData.class}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select class</option>
+            {classes.map((cls, index) => (
+              <option key={index} value={cls.class}>
+                {cls.class}
+              </option>
+            ))}
+          </select>
+        </div>
           {/* 🌸 Student Dropdown */}
           <div className="form-group">
             <label>Select Student</label>
@@ -109,7 +161,7 @@ const AddRemedialPayment = () => {
               <option value="">-- Select Student --</option>
               {students.map((student) => (
                 <option key={student.id} value={student.id}>
-                  {student.first_name} {student.second_name} {student.last_name} (Adm No: {student.admissionNo})
+                  {student.first_name} {student.second_name} {student.last_name} (Adm No: {student?.admissionNo})
                 </option>
               ))}
             </select>

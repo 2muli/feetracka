@@ -11,7 +11,6 @@ import {
     updateUser,
     verifyToken
 } from "../controllers/UserController.js";
-
 const router = express.Router();
 
 router.get("/",verifyToken, getUsers);  
@@ -21,7 +20,7 @@ router.post('/changePassword',verifyToken,changePassword);
 router.post('/logout',logout);
 router.post('/register', Register);
 router.put('/updateUser/:id',verifyToken,updateUser);
-router.put('/reset-password/:token', resetPasswordWithToken);
+router.put('/reset-password/:token',resetPasswordWithToken);
 router.delete('/:id',verifyToken,deleteUser);
 
 export default router;

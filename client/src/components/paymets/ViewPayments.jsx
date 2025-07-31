@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ViewPayments = () => {
   const [payments, setPayments] = useState([]);
@@ -49,11 +50,11 @@ const ViewPayments = () => {
     if (!window.confirm("Are you sure you want to delete this payment?")) return;
     try {
       await axios.delete(`http://localhost:8800/server/payments/${id}`);
-      alert("Payment deleted successfully");
+      toast.success("Payment deleted successfully");
       fetchPayments(); // refresh
     } catch (err) {
       console.error("Delete error:", err);
-      alert("Failed to delete payment");
+      toast.error("Failed to delete payment");
     }
   };
 

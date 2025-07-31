@@ -1,34 +1,35 @@
 import { db } from "../connectDB.js";
-
 export const addPayment = async (req, res) => {
   const { studentId, amountPaid, paymentMethod, term } = req.body;
-  
+
   if (!studentId || !amountPaid || !paymentMethod || !term) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
   try {
-    // Verify student exists
-    const [student] = await db.query("SELECT id FROM students WHERE id = ?", [studentId]);
+    // Fetch student ID and class
+    const [student] = await db.query(
+      "SELECT id, class FROM students WHERE id = ?",
+      [studentId]
+    );
+
     if (student.length === 0) {
       return res.status(404).json({ error: "Student not found" });
     }
 
+    const studentClass = student[0].class;
     const createdAt = new Date();
+
     const [result] = await db.query(
       `INSERT INTO payments (
-        student_id, 
-        Amount_paid, 
-        payment_method, 
-        term, 
-        createdAt
-      ) VALUES (?, ?, ?, ?, ?)`,
-      [studentId, amountPaid, paymentMethod, term, createdAt]
+        student_id, Amount_paid, payment_method, term, class, createdAt
+      ) VALUES (?, ?, ?, ?, ?, ?)`,
+      [studentId, amountPaid, paymentMethod, term, studentClass, createdAt]
     );
 
-    res.status(201).json({ 
-      message: "Payment recorded successfully", 
-      paymentId: result.insertId 
+    res.status(201).json({
+      message: "Payment recorded successfully",
+      paymentId: result.insertId,
     });
   } catch (error) {
     console.error("Error adding payment:", error);
@@ -49,7 +50,8 @@ export const getPayments = async (req, res) => {
         s.first_name,
         s.second_name,
         s.last_name,
-        s.student_AdmNo AS admissionNo
+        s.student_AdmNo AS admissionNo,
+        s.class
       FROM payments p
       JOIN students s ON p.student_id = s.id
       ORDER BY p.createdAt DESC`
@@ -76,8 +78,9 @@ export const getPaymentByStudentId = async (req, res) => {
         p.createdAt,
         s.first_name,
         s.second_name,
+        s.class,
         s.last_name,
-        s.student_AdmNo AS admissionNo
+        s.student_AdmNo AS admissionNo  
       FROM payments p
       JOIN students s ON p.student_id = s.id
       WHERE p.student_id = ?

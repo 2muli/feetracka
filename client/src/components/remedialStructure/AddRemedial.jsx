@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AddRemedial = () => {
   const navigate = useNavigate();
@@ -10,7 +11,6 @@ const AddRemedial = () => {
     amountPaid: "",
   });
 
-  const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
@@ -24,15 +24,14 @@ const AddRemedial = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError("");
 
     try {
       await axios.post("http://localhost:8800/server/remedials/", formData);
-      alert("Fee record added successfully");
+      toast.success("Fee record added successfully");
       navigate("/remedial"); // Redirect to view fees page
     } catch (err) {
       console.error("The Class already added!:", err);
-      setError(err.response?.data?.error || "Failed to add fee ");
+      toast.error(err.response?.data?.error || "Failed to add fee "); 
     } finally {
       setIsSubmitting(false);
     }
@@ -42,8 +41,6 @@ const AddRemedial = () => {
     <main className="sb-nav-fixed">
       <div className="container-fluid px-4">
         <h1 className="mt-4">Add Remedial</h1>
-
-        {error && <div className="alert alert-danger">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           {/* Term Dropdown */}

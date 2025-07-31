@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 // Fetch fee record by ID
 const fetchFeeById = async (id) => {
@@ -55,8 +56,13 @@ const EditRemedial = () => {
   } = useMutation({
     mutationFn: updateFee,
     onSuccess: () => {
-      alert("Fee updated successfully!");
+      toast.success("Fee updated successfully!");
       navigate("/remedial");
+    },
+    onError: (error) => {
+      toast.error(
+        (error?.response?.data?.error || "Unknown error")
+      );
     },
   });
 
@@ -116,11 +122,6 @@ const EditRemedial = () => {
               {isUpdating ? "Updating..." : "Update Fee"}
             </button>
 
-            {isUpdateError && (
-              <div className="alert alert-danger mt-3">
-                {updateError?.response?.data?.error || "Update failed"}
-              </div>
-            )}
           </form>
         )}
       </div>

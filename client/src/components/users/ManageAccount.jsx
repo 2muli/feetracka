@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
 const ManageAccount = () => {
@@ -54,11 +55,11 @@ const ManageAccount = () => {
         updatedData,
         { withCredentials: true }
       );
-      setMessage(res.data.message || "Update successful");
+      toast.success(res.data.message || "Update successful");
       navigate("/profile");
     } catch (err) {
       const error = err.response?.data?.error || "Update failed";
-      setMessage(error);
+      toast.error(error);
     }
   };
 
@@ -74,11 +75,7 @@ const ManageAccount = () => {
                 <h3 className="text-center font-weight-light my-4">Manage Account</h3>
               </div>
               <div className="card-body">
-                {message && (
-                  <div className={`alert ${message.includes("success") ? "alert-success" : "alert-danger"}`}>
-                    {message}
-                  </div>
-                )}
+                {message && toast(message)}
                 <form onSubmit={handleSubmit}>
                   <div className="row mb-3">
                     <div className="col-md-6">

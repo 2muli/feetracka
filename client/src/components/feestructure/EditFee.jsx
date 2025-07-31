@@ -2,7 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
+import { toast } from "react-toastify";
 // Fetch fee record by ID
 const fetchFeeById = async (id) => {
   const res = await axios.get(`http://localhost:8800/server/fees/${id}`);
@@ -59,7 +59,7 @@ const EditFees = () => {
   } = useMutation({
     mutationFn: updateFee,
     onSuccess: () => {
-      alert("Fee updated successfully!");
+      toast.success("Fee updated successfully!");
       navigate("/viewfee");
     },
   });

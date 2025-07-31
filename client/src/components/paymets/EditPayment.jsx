@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 // Fetch payment by ID
 const fetchPaymentById = async (id) => {
@@ -57,8 +58,11 @@ const EditPayment = () => {
   } = useMutation({
     mutationFn: updatePayment,
     onSuccess: () => {
-      alert("Payment updated successfully!");
+      toast.success("Payment updated successfully!");
       navigate("/viewPayment"); // Adjust route to your payments list
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.error || "Something went wrong.");
     },
   });
 
@@ -145,12 +149,6 @@ const EditPayment = () => {
             <button type="submit" className="btn btn-success" disabled={isUpdating}>
               {isUpdating ? "Updating..." : "Update Payment"}
             </button>
-
-            {isUpdateError && (
-              <div className="alert alert-danger mt-3">
-                {updateError?.response?.data?.error || "Update failed"}
-              </div>
-            )}
           </form>
         )}
       </div>

@@ -69,7 +69,6 @@ export const addStudent = async (req, res) => {
   }
 };
 
-// backend/controllers/student.js
 export const updateStudent = async (req, res) => {
   const { id } = req.params;
   const {
@@ -96,7 +95,7 @@ export const updateStudent = async (req, res) => {
   }
 
   try {
-    // 💥 Check if new adm no already exists for a different student
+    // Check if admission number exists for another student
     const [existing] = await db.query(
       "SELECT id FROM students WHERE `student_AdmNo` = ? AND id != ?",
       [admissionNo, id]
@@ -107,7 +106,7 @@ export const updateStudent = async (req, res) => {
     }
 
     const [result] = await db.query(
-      "UPDATE students SET first_name = ?, second_name = ?, last_name = ?, `student_AdmNo` = ?, class = ?, parent_name = ?, parent_contact = ? WHERE id = ?",
+      "UPDATE students SET first_name = ?, second_name = ?, last_name = ?, `student_AdmNo` = ?, `class` = ?, parent_name = ?, parent_contact = ? WHERE id = ?",
       [firstName, secondName, lastName, admissionNo, className, parentName, parentContact, id]
     );
 
@@ -121,6 +120,7 @@ export const updateStudent = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 export const deleteStudent = async (req, res) => {
   const { id } = req.params;
@@ -266,6 +266,15 @@ export const getStudentCountByClass = async (req, res) => {
     res.status(200).json({ count: rows[0].count });
   } catch (error) {
     console.error("Error fetching student count by class:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+export const getClasses = async (req, res) => {
+  try {
+    const [rows] = await db.query("SELECT DISTINCT class FROM students ORDER BY class");
+    res.status(200).json(rows);
+  } catch (error) {
+    console.error("Error fetching classes:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 };

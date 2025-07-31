@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ViewRemedial = () => {
   const [fees, setFees] = useState([]);
@@ -27,11 +28,11 @@ const ViewRemedial = () => {
 
     try {
       await axios.delete(`http://localhost:8800/server/remedials/${id}`);
-      alert("Fee deleted successfully!");
+      toast.success("Fee deleted successfully!");
       fetchFees();
     } catch (err) {
       console.error("Delete failed:", err);
-      alert("Something went wrong while deleting");
+      toast.error("Something went wrong while deleting");
     }
   };
 

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AddFees = () => {
   const navigate = useNavigate();
@@ -29,10 +30,10 @@ const AddFees = () => {
 
     try {
       await axios.post("http://localhost:8800/server/fees/addFee", formData);
-      alert("Fee record added successfully");
+      toast.success("Fee record added successfully");
       navigate("/viewfee"); // Redirect to view fees page
     } catch (err) {
-      console.error("The Class already added!:", err);
+      toast.error("The Class already added!:", err);
       setError(err.response?.data?.error || "Failed to add fee ");
     } finally {
       setIsSubmitting(false);
@@ -43,9 +44,6 @@ const AddFees = () => {
     <main className="sb-nav-fixed">
       <div className="container-fluid px-4">
         <h1 className="mt-4">Add Fees</h1>
-
-        {error && <div className="alert alert-danger">{error}</div>}
-
         <form onSubmit={handleSubmit}>
           {/* Class Dropdown */}
           <div className="form-group mb-3">

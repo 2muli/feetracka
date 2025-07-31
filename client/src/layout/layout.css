@@ -1,49 +1,86 @@
-/* Base layout */
-.sb-nav-fixed {
-  height: 100vh;
-}
-
-#layoutSidenav {
-  display: flex;
-  height: calc(100vh - 56px);
-}
-
-/* Sidebar styles */
-#layoutSidenav_nav {
-  width: 225px;
+/* Ensure body and html take full height */
+html, body {
   height: 100%;
-  position: fixed;
-  z-index: 1030;
-  transition: transform 0.15s ease-in-out;
+  margin: 0;
 }
 
-/* Content area */
-#layoutSidenav_content {
+/* Fix Navbar to top */
+.fixed-navbar {
+  position: fixed;
+  top: 0;
   width: 100%;
+  z-index: 1000;
+}
+
+/* Wrapper for entire layout */
+#layoutWrapper {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  padding-top: 56px; /* navbar height */
+  overflow: hidden;
+}
+
+/* Sidebar */
+#sidebarWrapper {
+  width: 100px;
+}
+
+#sidebar {
+  background-color: #343a40;
+  color: white;
+  height: calc(100vh - 56px);
+  position: fixed;
+  top: 56px;
+  left: 0;
+  overflow-y: auto;
+  transition: transform 0.3s ease;
+  width: 250px;
+  z-index: 999;
+}
+
+/* Content beside sidebar */
+#mainContent {
+  margin-left: 150px;
   padding: 20px;
-  margin-left: 0;
-  transition: margin-left 0.15s ease-in-out;
+  width: calc(100% - 250px);
+  height: calc(100vh - 56px);
   overflow-y: auto;
 }
 
-/* Mobile styles */
-.sb-sidenav-closed {
-  transform: translateX(-225px);
+/* Hide sidebar on small screens when toggled off */
+.sidebar-hidden #sidebarWrapper {
+  display: none;
 }
 
-.sb-sidenav-open {
-  transform: translateX(0);
+.sidebar-hidden #mainContent {
+  margin-left: 0;
+  width: 100%;
 }
 
-/* Desktop styles */
-@media (min-width: 992px) {
-  .sb-sidenav-closed, 
-  .sb-sidenav-open {
-    transform: translateX(0);
+/* 📱 Responsive Layout for Small Screens */
+@media screen and (max-width: 768px) {
+  #layoutWrapper {
+    flex-direction: column;
+    padding-top: 56px;
   }
 
-  #layoutSidenav_content {
-    margin-left: 225px;
-    width: calc(100% - 225px);
+  #sidebarWrapper {
+    width: 100%;
+  }
+
+  #sidebar {
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: auto;
+    transform: none !important;
+  }
+
+  #mainContent {
+    margin-left: 0;
+    width: 100%;
+    height: auto;
+    overflow-y: visible;
   }
 }

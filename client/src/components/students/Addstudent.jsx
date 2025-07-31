@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AddStudent = () => {
   const navigate=useNavigate();
@@ -21,7 +22,13 @@ const AddStudent = () => {
       return res.data;
     },
     onSuccess: () => {
+      toast.success("Student added successfully!");
       navigate("/viewstudents");
+    },
+    onError: (error) => {
+      toast.error(
+        (error?.response?.data?.error || "Unknown error")
+      );
     },
   });
 
@@ -153,11 +160,7 @@ const AddStudent = () => {
         </form>
 
         {isSuccess && <div className="alert alert-success mt-3">{data?.message}</div>}
-        {isError && (
-          <div className="alert alert-danger mt-3">
-            {error?.response?.data?.error || "Something went wrong"}
-          </div>
-        )}
+        
       </div>
     </main>
   );

@@ -1,198 +1,192 @@
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
+const fetchClasses = async () => {
+  try {
+    const res = await axios.get("http://localhost:8800/server/students/classes");
+    return res.data;
+  } catch (err) {
+    console.error("Error fetching classes:", err);
+    return [];
+  }
+};
 
 const AddPayment = () => {
   const navigate = useNavigate();
-
   const [students, setStudents] = useState([]);
-  const [terms, setTerms] = useState([]);
-  const [summary, setSummary] = useState(null);
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [error, setError] = useState("");
+
+  const { data: classes = [], isLoading: loadingClasses } = useQuery({
+    queryKey: ["classes"],
+    queryFn: fetchClasses,
+    staleTime: 60 * 60 * 1000,
+  });
 
   const [formData, setFormData] = useState({
+    class: "",
     studentId: "",
     amountPaid: "",
-    paymentDate: new Date().toISOString().split("T")[0],
     paymentMethod: "",
     term: "",
   });
 
-  // 🌸 Fetch students
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const res = await axios.get(`http://localhost:8800/server/students/searchStudents`);
-        setStudents(res.data);
-      } catch (err) {
-        console.error("Failed to fetch students", err);
-      }
-    };
-    fetchStudents();
-  }, []);
-
-  // 🌸 Fetch terms
-  useEffect(() => {
-    const fetchTerms = async () => {
-      try {
-        const res = await axios.get("http://localhost:8800/server/fees/terms/list");
-        console.log(res.data);
-        setTerms(res.data);
-      } catch (err) {
-        console.error("Failed to fetch terms", err);
-      }
-    };
-    fetchTerms();
-  }, []);
-
-  // 🌸 Fetch summary when student and term are selected
-  useEffect(() => {
-    if (formData.studentId && formData.term) {
-      const fetchSummary = async () => {
-        try {
-          const res = await axios.get(
-            `http://localhost:8800/server/students/${formData.studentId}/payment-summary?term=${formData.term}`
-          );
-          setSummary(res.data);
-        } catch (err) {
-          console.error("Failed to fetch summary", err);
-        }
-      };
-      fetchSummary();
-    }
-  }, [formData.studentId, formData.term]);
-
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
-
-    if (name === "studentId") {
-      const student = students.find((s) => s.id === parseInt(value));
-      setSelectedStudent(student || null);
-    }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (!formData.class) {
+      setStudents([]);
+      return;
+    }
 
-    const payload = {
-      studentId: parseInt(formData.studentId),
-      amountPaid: parseFloat(formData.amountPaid),
-      paymentMethod: formData.paymentMethod,
-      term: formData.term,
+    const fetchStudents = async () => {
+      try {
+        const res = await axios.get(
+          `http://localhost:8800/server/students/studentsByClass?className=${formData.class}`
+        );
+        setStudents(res.data);
+      } catch (err) {
+        console.error("Error fetching students:", err);
+        setStudents([]);
+      }
     };
 
-    try {
-      await axios.post("http://localhost:8800/server/payments/addPayment", payload);
-      alert("Payment added successfully, dear 🌷");
+    fetchStudents();
+  }, [formData.class]);
+
+  const mutation = useMutation({
+    mutationFn: async () => {
+      const res = await axios.post(
+        "http://localhost:8800/server/payments/addPayment",
+        formData
+      );
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Payment added successfully");
       navigate("/viewPayment");
-    } catch (error) {
-      alert(error?.response?.data?.error || "Something went wrong, dear 💔");
+    },
+    onError: (err) => {
+      toast.error(err.response?.data?.error || "Something went wrong.");
+    },
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!formData.studentId || !formData.term || !formData.amountPaid) {
+      toast.error("Please fill all required fields");
+      return;
     }
+
+    mutation.mutate();
   };
 
   return (
-    <main className="sb-nav-fixed">
-      <div className="container-fluid px-4">
-        <h2 className="mt-4">Add Payment</h2>
-        <form onSubmit={handleSubmit}>
-          {/* 🌸 Student Dropdown */}
-          <div className="form-group">
-            <label>Select Student</label>
-            <select
-              className="form-control"
-              name="studentId"
-              value={formData.studentId}
-              onChange={handleChange}
-              required
-            >
-              <option value="">-- Select Student --</option>
-              {students.map((student) => (
-                <option key={student.id} value={student.id}>
-                  {student.first_name} {student.second_name} {student.last_name} (Adm No: {student.admissionNo})
-                </option>
-              ))}
-            </select>
-          </div>
+    <div className="container mt-5">
+      <h3>Add Student Payment</h3>
+      <form onSubmit={handleSubmit}>
+        {/* Class Dropdown */}
+        <div className="mb-3">
+          <label className="form-label">Class</label>
+          <select
+            className="form-control"
+            name="class"
+            value={formData.class}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select class</option>
+            {classes.map((cls, index) => (
+              <option key={index} value={cls.class}>
+                {cls.class}
+              </option>
+            ))}
+          </select>
+        </div>
 
-          {/* 🌸 Term Dropdown */}
-          <div className="form-group mt-2">
-            <label>Select Term</label>
-            <select
-              className="form-control"
-              name="term"
-              value={formData.term}
-              onChange={handleChange}
-              required
-            >
-              <option value="">-- Select Term --</option>
-              {terms.map((term) => (
-                <option key={term} value={term}>
-                  Term {term}
-                </option>
-              ))}
-            </select>
-          </div>
+        {/* Student Dropdown */}
+        <div className="mb-3">
+          <label className="form-label">Student</label>
+          <select
+            className="form-control"
+            name="studentId"
+            value={formData.studentId}
+            onChange={handleChange}
+            disabled={!formData.class}
+            required
+          >
+            <option value="">Select student</option>
+            {students.map((student) => (
+              <option key={student.id} value={student.id}>
+                {student.first_name} {student.second_name} {student.last_name} -{" "}
+                {student.admissionNo || student["student_AdmNo."]}
+              </option>
+            ))}
+          </select>
+        </div>
 
-          {/* 🌸 Payment Summary */}
-          {summary && (
-            <div className="mt-3">
-              <p><strong>Full Name:</strong> {summary.fullName}</p>
-              <p><strong>Total Paid:</strong> Ksh {summary.totalPaid}</p>
-              <p><strong>Balance:</strong> Ksh {summary.balance}</p>
-            </div>
-          )}
+        {/* Term */}
+        <div className="mb-3">
+          <label className="form-label">Term</label>
+          <select
+            className="form-control"
+            name="term"
+            value={formData.term}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select term</option>
+            <option value="1">Term 1</option>
+            <option value="2">Term 2</option>
+            <option value="3">Term 3</option>
+          </select>
+        </div>
 
-          {/* 🌸 Amount Paid */}
-          <div className="form-group mt-2">
-            <label>Amount Paid</label>
-            <input
-              type="number"
-              className="form-control"
-              name="amountPaid"
-              value={formData.amountPaid}
-              onChange={handleChange}
-              required
-              disabled={!formData.studentId || !formData.term}
-            />
-          </div>
+        {/* Amount Paid */}
+        <div className="mb-3">
+          <label className="form-label">Amount Paid</label>
+          <input
+            type="number"
+            className="form-control"
+            name="amountPaid"
+            value={formData.amountPaid}
+            onChange={handleChange}
+            required
+            min={0}
+          />
+        </div>
 
-          {/* 🌸 Payment Method */}
-          <div className="form-group mt-2">
-            <label>Payment Method</label>
-            <select
-              className="form-control"
-              name="paymentMethod"
-              value={formData.paymentMethod}
-              onChange={handleChange}
-              required
-            >
-              <option value="">-- Select Method --</option>
-              <option value="Cash">Cash</option>
-              <option value="M-pesa">M-pesa</option>
-              <option value="Account">Account</option>
-              <option value="Cheque">Cheque</option>
-            </select>
-          </div>
+        {/* Payment Method */}
+        <div className="mb-3">
+          <label className="form-label">Payment Method</label>
+          <select
+            className="form-control"
+            name="paymentMethod"
+            value={formData.paymentMethod}
+            onChange={handleChange}
+          >
+            <option value="">Select method</option>
+            <option value="M-PESA">M-PESA</option>
+            <option value="Bank">Bank</option>
+            <option value="Cash">Cash</option>
+          </select>
+        </div>
 
-          {/* 🌸 Payment Date */}
-          <div className="form-group mt-2">
-            <label>Payment Date</label>
-            <input
-              type="date"
-              className="form-control"
-              value={formData.paymentDate}
-              disabled
-            />
-          </div>
-
-          {/* 🌸 Submit Button */}
-          <button type="submit" className="btn btn-success mt-3">
-            Submit Payment
-          </button>
-        </form>
-      </div>
-    </main>
+        <button
+          type="submit"
+          className="btn btn-success"
+          disabled={mutation.isPending}
+        >
+          {mutation.isPending ? "Submitting..." : "Submit Payment"}
+        </button>
+      </form>
+    </div>
   );
 };
 

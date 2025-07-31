@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-const StudentPaymentStatement = () => {
+const RemedialPaymentStatement = () => {
   const { studentId } = useParams();
   const [term, setTerm] = useState(1); // Not used actively but left as-is
   const [payments, setPayments] = useState([]);
@@ -15,10 +15,10 @@ const StudentPaymentStatement = () => {
     const fetchPaymentsAndFees = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:8800/server/payments/getStudentPayments/${studentId}`
+          `http://localhost:8800/server/remedialPayments/getRemedialPaymentByStudent/${studentId}`
         );
         const data = res.data;
-        console.log("data", data);
+        console.log("All data", data);
         setPayments(data);
 
         if (data.length > 0) {
@@ -50,8 +50,9 @@ const StudentPaymentStatement = () => {
       for (const t of terms) {
         try {
           const res = await axios.get(
-            `http://localhost:8800/server/fees/byClass/${studentClass}/${t}`
+            `http://localhost:8800/server/remedials/byClass/${t}`
           );
+          console.log("All data", res.data);
           feeMap[t] = res.data[0]?.Amount_paid || 0;
         } catch (err) {
           console.error(`Failed to fetch fee for term ${t}`, err);
@@ -79,7 +80,7 @@ const StudentPaymentStatement = () => {
     <div className="container mt-4">
       <div className="d-flex justify-content-between mb-3">
         <h3>Payment Statement</h3>
-        <Link to="/viewpayment">
+        <Link to="/viewremedialpayments">
           <button className="btn btn-secondary">Back</button>
         </Link>
       </div>
@@ -180,4 +181,4 @@ const StudentPaymentStatement = () => {
   );
 };
 
-export default StudentPaymentStatement;
+export default RemedialPaymentStatement;

@@ -2,6 +2,7 @@ import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
 const FilterRemedialBalance = () => {
@@ -21,7 +22,7 @@ const FilterRemedialBalance = () => {
   }
   const handleSearch = async () => {
     if (!studentClass || !term || minBalance === "") {
-      alert("Please select class, term, and enter minimum balance");
+      toast.error("Please select class, term, and enter minimum balance");
       return;
     }
 
@@ -34,7 +35,7 @@ const FilterRemedialBalance = () => {
       setCurrentPage(1);
     } catch (error) {
       console.error("Search failed:", error);
-      alert("Failed to fetch students with balances");
+      toast.error("Failed to fetch students with balances");
     }
   };
 

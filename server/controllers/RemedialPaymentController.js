@@ -61,7 +61,39 @@ export const getRemedialPayments = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };  
+export const getRemedialPaymentByStudentId = async (req, res) => {
+  const { studentId } = req.params;
+  if (!studentId) return res.status(400).json({ error: "Student ID is required" });
 
+  try {
+    const [payments] = await db.query(
+      `SELECT 
+        p.id,
+        p.student_id,   
+        p.Amount_paid,
+        p.payment_method,
+        p.term,
+        p.createdAt,
+        s.first_name,
+        s.second_name,
+        s.class,
+        s.last_name,
+        s.student_AdmNo AS admissionNo  
+      FROM remedialpayments p
+      JOIN students s ON p.student_id = s.id
+      WHERE p.student_id = ?
+      ORDER BY p.createdAt DESC`,
+      [studentId]
+    );
+    if(payments.length === 0){
+      return res.status(404).json({ error: "Payments not found for this student" });
+    } 
+    res.status(200).json(payments);
+  } catch (error) {
+    console.error("Error fetching payments by student ID:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
 export const getRemedialTodayPayments = async (req, res) => {
   try {
     const today = new Date();
