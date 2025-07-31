@@ -5,15 +5,6 @@ import express from "express";
 import http from "http";
 import { db } from "./connectDB.js";
 
-// Route Imports
-import feeRoutes from "./routes/feestructure.js";
-import paymentRoutes from "./routes/payment.js";
-import remedialRoutes from "./routes/remedial.js";
-import remedialPaymentRoutes from "./routes/RemialPayment.js";
-import resetPasswordRoutes from "./routes/resetPassword.js";
-import studentRoutes from "./routes/students.js";
-import userRoutes from "./routes/users.js";
-
 // Load environment variables
 dotenv.config();
 
@@ -25,20 +16,18 @@ const server = http.createServer(app);
 const allowedOrigins = [
   "http://localhost:5173",
   "https://feetracka.vercel.app",
-  "https://feetracka-*.vercel.app", // Wildcard for all Vercel preview URLs
+  "https://feetracka-*.vercel.app",
   "https://feetracka-muli-muthuis-projects.vercel.app",
   "https://feetracka-pmihxfav4-muli-muthuis-projects.vercel.app",
   process.env.FRONTEND_URL
-].filter(Boolean); // Remove any undefined values
+].filter(Boolean);
 
 // Enhanced CORS configuration
 app.use(
   cors({
     origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
       
-      // Check if the origin is in the allowed list or matches a wildcard pattern
       const isAllowed = allowedOrigins.some(allowedOrigin => {
         if (allowedOrigin.includes('*')) {
           const regex = new RegExp(allowedOrigin.replace('*', '.*'));
@@ -56,22 +45,10 @@ app.use(
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "X-Requested-With",
-      "Accept",
-      "Origin",
-      "Access-Control-Request-Method",
-      "Access-Control-Request-Headers"
-    ],
-    exposedHeaders: ["Set-Cookie", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
     optionsSuccessStatus: 200
   })
 );
-
-// Handle preflight requests
-app.options('*', cors());
 
 // Middleware
 app.use(cookieParser());
@@ -82,23 +59,31 @@ app.get("/", (req, res) => {
   res.send("✅ Backend is running successfully on Render!");
 });
 
-// Routes
-app.use("/server/fees", feeRoutes);
-app.use("/server/remedials", remedialRoutes);
-app.use("/server/payments", paymentRoutes);
-app.use("/server/students", studentRoutes);
-app.use("/server/remedialPayments", remedialPaymentRoutes);
-app.use("/server/users", userRoutes);
-app.use("/server/resetPassword", resetPasswordRoutes);
+// Import and use routes carefully
+import feeRoutes from "./routes/feestructure.js";
+import paymentRoutes from "./routes/payment.js";
+import remedialRoutes from "./routes/remedial.js";
+import remedialPaymentRoutes from "./routes/RemialPayment.js";
+import resetPasswordRoutes from "./routes/resetPassword.js";
+import studentRoutes from "./routes/students.js";
+import userRoutes from "./routes/users.js";
+
+// Apply routes with error handling
+try {
+  app.use("/server/fees", feeRoutes);
+  app.use("/server/remedials", remedialRoutes);
+  app.use("/server/payments", paymentRoutes);
+  app.use("/server/students", studentRoutes);
+  app.use("/server/remedialPayments", remedialPaymentRoutes);
+  app.use("/server/users", userRoutes);
+  app.use("/server/resetPassword", resetPasswordRoutes);
+} catch (err) {
+  console.error("Route initialization error:", err);
+  process.exit(1);
+}
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  if (err.message === 'Not allowed by CORS') {
-    return res.status(403).json({
-      success: false,
-      error: 'CORS policy blocked this request'
-    });
-  }
   console.error('Server Error:', err);
   res.status(500).json({
     success: false,
