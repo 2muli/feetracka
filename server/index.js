@@ -14,14 +14,11 @@ import resetPasswordRoutes from "./routes/resetPassword.js";
 import studentRoutes from "./routes/students.js";
 import userRoutes from "./routes/users.js";
 
-// Load environment variables
 dotenv.config();
 
-// Initialize Express app and server
 const app = express();
 const server = http.createServer(app);
 
-// Allow listed frontend origins
 const allowedOrigins = [
   "http://localhost:5173",
   "https://feetracka.vercel.app",
@@ -32,47 +29,52 @@ const allowedOrigins = [
 // Enhanced CORS configuration
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-    optionsSuccessStatus: 200
+    allowedHeaders: ["Content-Type", "Authorization", "x-access-token"],
   })
 );
 
-// Middlewares
 app.use(cookieParser(process.env.COOKIE_SECRET || 'default-secret'));
 app.use(express.json());
 
-// Health check route
-app.get("/", (req, res) => {
-  res.send("✅ Backend is running successfully!");
+// Public routes (no auth required)
+app.use("/server/users", userRoutes); // Move before auth middleware
+
+// Auth middleware for protected routes
+app.use((req, res, next) => {
+  // Skip auth for certain routes
+  if (req.path.startsWith('/server/users/login') || 
+      req.path.startsWith('/server/users/register')) {
+    return next();
+  }
+  
+  const token = req.cookies?.token || req.headers['x-access-token'];
+  if (!token) {
+    return res.status(401).json({ success: false, error: "Unauthorized - No token provided" });
+  }
+  next();
 });
 
-// API Routes
+// Protected routes
 app.use("/server/fees", feeRoutes);
 app.use("/server/remedials", remedialRoutes);
 app.use("/server/payments", paymentRoutes);
 app.use("/server/students", studentRoutes);
 app.use("/server/remedialPayments", remedialPaymentRoutes);
-app.use("/server/users", userRoutes);
 app.use("/server/resetPassword", resetPasswordRoutes);
 
-// Error handling middleware
+// Error handling
 app.use((err, req, res, next) => {
   console.error('Server Error:', err);
   res.status(err.status || 500).json({
-    error: err.message || 'Internal Server Error'
+    success: false,
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal Server Error'
   });
 });
 
-// MySQL Connection Check
+// MySQL Connection
 db.connect((err) => {
   if (err) {
     console.error("❌ MySQL connection failed:", err.message);
@@ -81,7 +83,6 @@ db.connect((err) => {
   }
 });
 
-// Start server
 const PORT = process.env.PORT || 8800;
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
