@@ -1,8 +1,8 @@
-import cookieParser from "cookie-parser";
-import cors from "cors";
-import dotenv from "dotenv";
 import express from "express";
 import http from "http";
+import dotenv from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 import { db } from "./connectDB.js";
 
 // Route Imports
@@ -17,29 +17,42 @@ import userRoutes from "./routes/users.js";
 // Load environment variables
 dotenv.config();
 
-// Initialize app and server
+// Initialize app and HTTP server
 const app = express();
 const server = http.createServer(app);
 
-// CORS Setup
+// Allow only specific frontend URLs
+const allowedOrigins = [
+  "http://localhost:5173", // local dev
+  "https://feetracka.vercel.app", // main deployment
+  "https://feetracka-muli-muthuis-projects.vercel.app", // vercel preview
+];
+
+// Setup CORS
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "*", // fallback to any origin if not set (dev only)
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS: " + origin));
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
 
-// Middleware
+// Middlewares
 app.use(cookieParser());
 app.use(express.json());
 
-// Basic health route
+// Health check
 app.get("/", (req, res) => {
   res.send("✅ Backend is running successfully on Render!");
 });
 
-// Routes
+// Register routes
 app.use("/server/fees", feeRoutes);
 app.use("/server/remedials", remedialRoutes);
 app.use("/server/payments", paymentRoutes);
@@ -48,7 +61,7 @@ app.use("/server/remedialPayments", remedialPaymentRoutes);
 app.use("/server/users", userRoutes);
 app.use("/server/resetPassword", resetPasswordRoutes);
 
-// Connect DB
+// MySQL DB connection
 db.connect((err) => {
   if (err) {
     console.error("❌ Failed to connect to MySQL:", err.message);
@@ -57,7 +70,7 @@ db.connect((err) => {
   }
 });
 
-// Start Server
+// Start server
 const PORT = process.env.PORT || 8800;
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
