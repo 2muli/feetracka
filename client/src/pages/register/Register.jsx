@@ -8,7 +8,6 @@ const Register = () => {
   const [error, setError] = useState(null);
   const [user, setUser] = useState({
     firstName: "",
-    secondName: "",
     lastName: "",
     email: "",
     phone: "",
@@ -26,40 +25,38 @@ const Register = () => {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/server/users/register`,
         userData,
-        { withCredentials: true }
+        { 
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }
       );
       return response.data;
     },
-    onSuccess: () => {
-      navigate("/for-account-to-activated");
+    onSuccess: (data) => {
+      if (data.success) {
+        navigate("/for-account-to-activated");
+      } else {
+        setError(data.error || "Registration failed");
+      }
     },
     onError: (error) => {
-      setError(error.response?.data?.message || error.message);
+      setError(error.response?.data?.error || error.message || "Registration failed");
     },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const { password, confirmPassword } = user;
-
-    if (password.length < 6) {
+    // Validation
+    if (user.password.length < 6) {
       return setError("Password must be at least 6 characters long");
     }
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
-    if (!passwordRegex.test(password)) {
-      return setError("Weak password. Must include uppercase, lowercase, number, and symbol.");
+    if (user.password !== user.confirmPassword) {
+      return setError("Passwords do not match");
     }
-
-    if (password !== confirmPassword) {
-      return setError("Password and confirm password do not match");
-    }
-
-    const { confirmPassword: _, ...submitData } = user;
-
-    mutation.mutate(submitData);
-  };
 
   return (
     <main>
