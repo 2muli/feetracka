@@ -1,1 +1,83 @@
+/* layout.css - Mobile-first responsive layout with proper scrolling */
 
+/* Base styles for all devices */
+.layout-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.fixed-navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1000;
+  height: 56px; /* Standard navbar height */
+}
+
+.layout-body {
+  display: flex;
+  flex-direction: column; /* Stack vertically on mobile by default */
+  flex: 1;
+  margin-top: 56px; /* Offset for fixed navbar */
+  width: 100%;
+  min-height: calc(100vh - 56px);
+  overflow: hidden; /* Contain the scrolling children */
+}
+
+.sidebar-area {
+  width: 100%;
+  background-color: #343a40;
+  color: white;
+  overflow-y: auto;
+  max-height: 40vh; /* Limit height on mobile */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+}
+
+.main-content {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  height: calc(100vh - 56px - 40vh); /* Calculate remaining space */
+}
+
+/* Desktop styles (768px and up) */
+@media (min-width: 768px) {
+  .layout-body {
+    flex-direction: row; /* Side by side on desktop */
+  }
+
+  .sidebar-area {
+    width: 250px;
+    max-height: none;
+    height: calc(100vh - 56px);
+    position: sticky;
+    top: 56px;
+  }
+
+  .main-content {
+    height: calc(100vh - 56px);
+    padding: 20px;
+  }
+
+  /* When sidebar is hidden */
+  .sidebar-hidden .sidebar-area {
+    display: none;
+  }
+
+  .sidebar-hidden .main-content {
+    width: 100%;
+  }
+}
+
+/* Special case when sidebar is open on mobile */
+.sidebar-open .sidebar-area {
+  max-height: calc(100vh - 56px); /* Take full height minus navbar */
+}
+
+.sidebar-open .main-content {
+  display: none; /* Hide content when sidebar is open on mobile */
+}
