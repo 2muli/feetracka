@@ -7,7 +7,6 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import App from "./App";
 import AuthProvider from "./context/AuthProvider";
-import "./App.css";
 
 const queryClient = new QueryClient();
 
@@ -18,16 +17,16 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <AuthProvider>
           <App />
           <ToastContainer
-  position="top-right"
-  autoClose={3000}
-  hideProgressBar={false}
-  newestOnTop={false}
-  closeOnClick
-  pauseOnFocusLoss
-  draggable
-  pauseOnHover
-  theme="colored"
-/>
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="colored"
+          />
         </AuthProvider>
       </BrowserRouter>
     </QueryClientProvider>    
