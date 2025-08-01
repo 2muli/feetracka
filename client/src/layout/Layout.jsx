@@ -13,12 +13,13 @@ const Layout = () => {
   };
 
   useEffect(() => {
-    if (isSidebarOpen && window.innerWidth <= 768) {
+    // Add/remove class to body based on sidebar state
+    if (isSidebarOpen) {
       document.body.classList.add('sidebar-open');
     } else {
       document.body.classList.remove('sidebar-open');
     }
-    
+
     return () => {
       document.body.classList.remove('sidebar-open');
     };
@@ -34,11 +35,11 @@ const Layout = () => {
         />
       </div>
 
-      <div className={`layout-body ${isSidebarOpen ? "" : "sidebar-hidden"}`}>
-        <div className="sidebar-area scrollable-container">
+      <div className={`layout-body ${isSidebarOpen ? "sidebar-open" : ""}`}>
+        <div className="sidebar-area">
           <Sidebar isSidebarOpen={isSidebarOpen} searchTerm={searchTerm} />
         </div>
-        <div className="main-content scrollable-container">
+        <div className="main-content">
           <Outlet />
         </div>
       </div>
