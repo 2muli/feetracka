@@ -1,29 +1,33 @@
-/* layout.css - Mobile-first responsive layout with proper scrolling */
+/* Mobile-first approach */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
 
-/* Base styles for all devices */
 .layout-root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  width: 100%;
 }
 
 .fixed-navbar {
   position: fixed;
   top: 0;
   width: 100%;
-  z-index: 1000;
-  height: 56px; /* Standard navbar height */
+  height: 56px;
+  z-index: 1030; /* Above Bootstrap's z-index */
 }
 
 .layout-body {
   display: flex;
-  flex-direction: column; /* Stack vertically on mobile by default */
+  flex-direction: column;
   flex: 1;
-  margin-top: 56px; /* Offset for fixed navbar */
+  margin-top: 56px;
   width: 100%;
   min-height: calc(100vh - 56px);
-  overflow: hidden; /* Contain the scrolling children */
 }
 
 .sidebar-area {
@@ -31,8 +35,9 @@
   background-color: #343a40;
   color: white;
   overflow-y: auto;
-  max-height: 40vh; /* Limit height on mobile */
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
+  max-height: 0;
+  transition: max-height 0.3s ease;
+  -webkit-overflow-scrolling: touch;
 }
 
 .main-content {
@@ -41,13 +46,13 @@
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   width: 100%;
-  height: calc(100vh - 56px - 40vh); /* Calculate remaining space */
+  height: calc(100vh - 56px);
 }
 
-/* Desktop styles (768px and up) */
+/* Desktop styles */
 @media (min-width: 768px) {
   .layout-body {
-    flex-direction: row; /* Side by side on desktop */
+    flex-direction: row;
   }
 
   .sidebar-area {
@@ -63,7 +68,6 @@
     padding: 20px;
   }
 
-  /* When sidebar is hidden */
   .sidebar-hidden .sidebar-area {
     display: none;
   }
@@ -73,11 +77,18 @@
   }
 }
 
-/* Special case when sidebar is open on mobile */
+/* Mobile sidebar open state */
 .sidebar-open .sidebar-area {
-  max-height: calc(100vh - 56px); /* Take full height minus navbar */
+  max-height: calc(100vh - 56px);
+  border-bottom: 1px solid #495057;
 }
 
-.sidebar-open .main-content {
-  display: none; /* Hide content when sidebar is open on mobile */
+/* Fix for Bootstrap modal scrolling */
+.modal-open {
+  overflow: auto;
+}
+
+.modal-open .layout-root {
+  position: fixed;
+  width: 100%;
 }
