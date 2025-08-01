@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import mysql from 'mysql2/promise';
+<<<<<<< HEAD
 dotenv.config();
 
 let db;
@@ -17,3 +18,14 @@ try {
 }
 
 export { db };
+=======
+
+dotenv.config(); // Load .env
+
+export const db = await mysql.createConnection({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+});
+>>>>>>> e9717a5 (Implement responsive layout and sidebar scroll fix)
