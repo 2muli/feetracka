@@ -46,7 +46,6 @@ html, body {
   flex-shrink: 0;
 }
 
-/* Hide sidebar when toggled */
 .sidebar-hidden .sidebar-area {
   display: none;
 }
@@ -60,7 +59,6 @@ html, body {
   background-color: #f8f9fc;
 }
 
-/* When sidebar is hidden, expand content full width */
 .sidebar-hidden .main-content {
   width: 100%;
 }
@@ -84,8 +82,8 @@ html, body {
   .main-content {
     width: 100%;
     padding: 15px;
+    min-height: calc(100vh - 56px);
     overflow-y: auto !important;
-    min-height: calc(100vh - 56px); /* ensures full view */
   }
 
   body.sidebar-open {
@@ -94,5 +92,18 @@ html, body {
 
   .sidebar-open .sidebar-area {
     max-height: calc(100vh - 56px);
+  }
+}
+
+/* === FINAL OVERRIDE FOR SB ADMIN === */
+@media screen and (max-width: 768px) {
+  #content {
+    overflow-y: auto !important;
+    height: 100% !important;
+  }
+
+  .main-content {
+    overflow-y: auto !important;
+    height: 100% !important;
   }
 }
