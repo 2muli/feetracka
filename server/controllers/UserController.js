@@ -105,7 +105,7 @@ export const login = async (req, res) => {
   }
   try {
     const [user] = await query(
-      "SELECT id, first_name, last_name, email, password, role FROM users WHERE email = ?",
+      "SELECT id, first_name, last_name, email, password, role, isActive FROM users WHERE email = ?",
       [email]
     );
 
@@ -119,7 +119,7 @@ export const login = async (req, res) => {
     }
 
     const token = jwt.sign(
-      { id: user.id, email: user.email, role: user.role },
+      { id: user.id, email: user.email, role: user.role, isActive: user.isActive },
       process.env.JWT_SECRET,
       { expiresIn: "1d" } // 1 day
     );
@@ -139,6 +139,7 @@ export const login = async (req, res) => {
         lastName: user.last_name,
         email: user.email,
         role: user.role,
+        isActive: user.isActive,
       },
     });
   } catch (error) {
@@ -160,7 +161,7 @@ export const verifyToken = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const [user] = await query("SELECT id, email, role FROM users WHERE id = ?", [decoded.id]);
+    const [user] = await query("SELECT id, email, role, isActive FROM users WHERE id = ?", [decoded.id]);
 
     if (!user) {
       console.log(`Token valid but user not found: ${decoded.id}`);
@@ -170,7 +171,8 @@ export const verifyToken = async (req, res, next) => {
     req.user = {
       id: user.id,
       email: user.email,
-      role: user.role
+      role: user.role,
+      isActive: user.isActive
     };
     next();
   } catch (error) {
@@ -191,7 +193,7 @@ export const getLoggedUser = async (req, res) => {
 
     // Get full user details (excluding password)
     const [user] = await query(
-      "SELECT id, first_name, second_name, last_name, email, phone, role, createdAt FROM users WHERE id = ?",
+      "SELECT id, first_name, second_name, last_name, email, phone, role,isActive, createdAt FROM users WHERE id = ?",
       [req.user.id]
     );
 
@@ -208,7 +210,9 @@ export const getLoggedUser = async (req, res) => {
         email: user.email,
         phone: user.phone,
         role: user.role,
-        createdAt: user.createdAt
+        isActive: user.isActive,
+        createdAt: user.createdAt,
+        
       }
     });
   } catch (error) {

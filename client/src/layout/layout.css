@@ -83,6 +83,7 @@ html, body {
     padding: 15px;
     min-height: calc(100vh - 56px);
     overflow-y: auto !important;
+    overflow-x: auto !important;
   }
 
   body.sidebar-open {

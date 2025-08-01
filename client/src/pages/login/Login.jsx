@@ -9,6 +9,7 @@ import "./login.css";
 
 const Login = () => {
   const [inputs, setInputs] = useState({ email: "", password: "" });
+  const {userDetails} = useAuth();
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -19,14 +20,20 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(inputs);
-      toast.success("Login successful");
-      navigate("/dashboard");
+      const loggedUser = await login(inputs); // get fresh data
+      console.log(loggedUser);
+  
+      if (loggedUser.isActive !== 1) {
+        navigate("/for-account-to-activated");
+      } else {
+        toast.success("Login successful");
+        navigate("/dashboard");
+      }
     } catch (err) {
-      toast.error(err.message);
+      toast.error(err.response?.data?.error || "Login failed");
     }
   };
-
+  
   return (
     <main>
       <div className="container">
