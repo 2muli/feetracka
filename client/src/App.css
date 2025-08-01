@@ -1,45 +1,39 @@
-/* Reset + global */
-html,
-body,
-#root {
+/* Global resets */
+html, body {
   margin: 0;
   padding: 0;
-  height: 100%;
   width: 100%;
+  height: 100%;
   font-family: Arial, sans-serif;
-  overflow: auto;
-  background-color: #f8f9fa;
+  overflow-x: hidden;
 }
 
-/* Ensure layout-root stretches and scrolls */
+/* Root container for Layout */
 .layout-root {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  overflow: hidden; /* prevents duplicate scrollbars */
+  width: 100%;
 }
 
-/* Fixed Navbar always on top */
+/* Fixed navbar */
 .fixed-navbar {
   position: fixed;
   top: 0;
-  left: 0;
-  right: 0;
-  height: 56px;
+  width: 100%;
   z-index: 1000;
-  background-color: white;
 }
 
-/* Main content area with sidebar */
+/* Main body of layout */
 .layout-body {
   display: flex;
   flex: 1;
-  padding-top: 56px; /* make room for navbar */
-  overflow: hidden;
-  height: calc(100vh - 56px);
+  padding-top: 56px; /* adjust for fixed navbar */
+  width: 100%;
+  min-height: calc(100vh - 56px);
 }
 
-/* Sidebar - vertical scrollable */
+/* Sidebar styling */
 .sidebar-area {
   width: 250px;
   background-color: #343a40;
@@ -48,17 +42,19 @@ body,
   position: sticky;
   top: 56px;
   height: calc(100vh - 56px);
+  z-index: 999;
 }
 
-/* Main content - scrollable area */
+/* Content beside sidebar */
 .main-content {
   flex: 1;
-  overflow-y: auto;
   padding: 20px;
+  overflow-y: auto;
   height: calc(100vh - 56px);
+  width: 100%;
 }
 
-/* When sidebar is hidden on small screens */
+/* Hide sidebar if toggled off */
 .sidebar-hidden .sidebar-area {
   display: none;
 }
@@ -67,31 +63,55 @@ body,
   width: 100%;
 }
 
-/* Make all internal containers scrollable if too long */
-.main-content > * {
-  min-height: 100%;
-}
-
-/* Responsive tweaks for small screens */
+/* Mobile responsiveness */
 @media screen and (max-width: 768px) {
   .layout-body {
     flex-direction: column;
-    height: auto;
-    overflow: visible;
+    min-height: calc(100vh - 56px);
   }
 
   .sidebar-area {
     width: 100%;
     height: auto;
+    max-height: 60vh;
     position: relative;
     top: 0;
-    overflow-y: visible;
+    overflow-y: auto;
   }
 
   .main-content {
-    width: 100%;
     height: auto;
-    overflow-y: visible;
-    overflow-x: auto;
+    min-height: calc(100vh - 56px);
+    overflow-y: auto;
+    padding: 15px;
   }
+
+  /* When sidebar is open on mobile */
+  body.sidebar-open {
+    overflow: hidden;
+  }
+
+  .sidebar-open .layout-body {
+    height: 100vh;
+  }
+
+  .sidebar-open .sidebar-area {
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+  }
+}
+
+/* Ensure all content areas are scrollable when needed */
+.scrollable-container {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Bootstrap overrides for better mobile scrolling */
+.modal-open {
+  overflow: auto;
+}
+
+.modal {
+  overflow-y: auto;
 }
