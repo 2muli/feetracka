@@ -34,12 +34,11 @@ const Layout = () => {
         />
       </div>
 
-      {/* Layout Wrapper */}
-      <div id="layoutWrapper" className={isSidebarOpen ? "" : "sidebar-hidden"}>
-        <div id="sidebarWrapper">
+      <div className={`layout-body ${!isSidebarOpen ? "sidebar-hidden" : ""}`}>
+        <div className="sidebar-area">
           <Sidebar isSidebarOpen={isSidebarOpen} searchTerm={searchTerm} />
         </div>
-        <div id="main-content">
+        <div className="main-content">
           <Outlet />
         </div>
       </div>
