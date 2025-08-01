@@ -56,7 +56,6 @@ html, body {
   padding: 20px;
   overflow-y: auto;
   height: 100%;
-  background-color: #f8f9fc;
 }
 
 .sidebar-hidden .main-content {

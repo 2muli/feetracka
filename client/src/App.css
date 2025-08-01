@@ -6,7 +6,7 @@ html, body {
   width: 100%;
   font-family: Arial, sans-serif;
   overflow-x: hidden;
-  background-color: #f8f9fa;
+  background-color: lightblue;
 }
 
 /* Root container */
@@ -23,7 +23,7 @@ html, body {
   left: 0;
   width: 100%;
   z-index: 1000;
-}
+  }
 
 /* Layout body (Sidebar + Main) */
 .layout-body {
@@ -37,7 +37,7 @@ html, body {
 /* Sidebar styles */
 .sidebar-area {
   width: 250px;
-  background-color: #343a40;
+  background-color: lightblue;
   color: white;
   overflow-y: auto;
   height: 100%;
