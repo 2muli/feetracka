@@ -1,31 +1,33 @@
-/* Reset */
+/* === Reset === */
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
   width: 100%;
-  overflow-x: hidden;
   font-family: Arial, sans-serif;
+  overflow-x: hidden;
+  background-color: #f8f9fa;
 }
 
-/* Root container for layout */
+/* === Root layout container === */
 .layout-root {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
 }
 
-/* Fixed navbar */
+/* === Fixed Top Navbar === */
 .fixed-navbar {
   height: 56px;
   width: 100%;
   position: fixed;
   top: 0;
+  left: 0;
   z-index: 1000;
   background-color: #4e73df;
 }
 
-/* Body area below navbar */
+/* === Body below navbar (Sidebar + Main Content) === */
 .layout-body {
   display: flex;
   flex: 1;
@@ -34,7 +36,7 @@ html, body {
   overflow: hidden;
 }
 
-/* Sidebar */
+/* === Sidebar === */
 .sidebar-area {
   width: 250px;
   background-color: #343a40;
@@ -44,34 +46,46 @@ html, body {
   flex-shrink: 0;
 }
 
+/* Hide sidebar when toggled */
 .sidebar-hidden .sidebar-area {
   display: none;
 }
 
-/* Main content */
+/* === Main Content === */
 .main-content {
   flex: 1;
-  overflow-y: auto;
   padding: 20px;
+  overflow-y: auto;
+  height: 100%;
   background-color: #f8f9fc;
 }
 
-/* Responsive */
+/* When sidebar is hidden, expand content full width */
+.sidebar-hidden .main-content {
+  width: 100%;
+}
+
+/* === Responsive Styles === */
 @media screen and (max-width: 768px) {
   .layout-body {
     flex-direction: column;
+    height: auto;
+    overflow: auto;
   }
 
   .sidebar-area {
     width: 100%;
     height: auto;
+    position: relative;
     max-height: 60vh;
+    overflow-y: auto;
   }
 
   .main-content {
-    height: auto;
-    min-height: 100vh;
+    width: 100%;
+    padding: 15px;
     overflow-y: auto;
+    min-height: calc(100vh - 56px); /* ensures full view */
   }
 
   body.sidebar-open {
@@ -80,6 +94,5 @@ html, body {
 
   .sidebar-open .sidebar-area {
     max-height: calc(100vh - 56px);
-    overflow-y: auto;
   }
 }
