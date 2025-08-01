@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/navbar/Navbar";
 import Sidebar from "../components/sidebar/Sidebar";
@@ -13,15 +13,14 @@ const Layout = () => {
   };
 
   useEffect(() => {
-    // Add/remove class to body based on sidebar state
     if (isSidebarOpen) {
-      document.body.classList.add('sidebar-open');
+      document.body.classList.add("sidebar-open");
     } else {
-      document.body.classList.remove('sidebar-open');
+      document.body.classList.remove("sidebar-open");
     }
 
     return () => {
-      document.body.classList.remove('sidebar-open');
+      document.body.classList.remove("sidebar-open");
     };
   }, [isSidebarOpen]);
 
@@ -39,6 +38,7 @@ const Layout = () => {
         <div className="sidebar-area">
           <Sidebar isSidebarOpen={isSidebarOpen} searchTerm={searchTerm} />
         </div>
+
         <div className="main-content">
           <Outlet />
         </div>
