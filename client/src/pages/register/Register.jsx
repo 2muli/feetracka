@@ -25,11 +25,11 @@ const Register = () => {
       const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/server/users/register`,
         userData,
-        { 
+        {
           withCredentials: true,
           headers: {
-            'Content-Type': 'application/json'
-          }
+            "Content-Type": "application/json",
+          },
         }
       );
       return response.data;
@@ -42,21 +42,27 @@ const Register = () => {
       }
     },
     onError: (error) => {
-      setError(error.response?.data?.error || error.message || "Registration failed");
+      setError(
+        error.response?.data?.error || error.message || "Registration failed"
+      );
     },
   });
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Validation
-    if (user.password.length < 6) {
+    const { password, confirmPassword, ...rest } = user;
+
+    if (password.length < 6) {
       return setError("Password must be at least 6 characters long");
     }
 
-    if (user.password !== user.confirmPassword) {
+    if (password !== confirmPassword) {
       return setError("Passwords do not match");
     }
+
+    mutation.mutate(rest);
+  };
 
   return (
     <main>
