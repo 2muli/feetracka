@@ -14,10 +14,14 @@ const Layout = () => {
 
   useEffect(() => {
     if (isSidebarOpen && window.innerWidth <= 768) {
-      document.body.style.overflow = "hidden";
+      document.body.classList.add('sidebar-open');
     } else {
-      document.body.style.overflow = "auto";
+      document.body.classList.remove('sidebar-open');
     }
+    
+    return () => {
+      document.body.classList.remove('sidebar-open');
+    };
   }, [isSidebarOpen]);
 
   return (
@@ -31,10 +35,10 @@ const Layout = () => {
       </div>
 
       <div className={`layout-body ${isSidebarOpen ? "" : "sidebar-hidden"}`}>
-        <div className="sidebar-area">
+        <div className="sidebar-area scrollable-container">
           <Sidebar isSidebarOpen={isSidebarOpen} searchTerm={searchTerm} />
         </div>
-        <div className="main-content">
+        <div className="main-content scrollable-container">
           <Outlet />
         </div>
       </div>
