@@ -39,6 +39,7 @@ import CookieExpire from "./context/CookieExpire";
 import Dashboard from "./dasboard/Dashboard";
 import Error from "./error/Error";
 import Layout from "./layout/Layout";
+import "./App.css";
 import Login from "./pages/login/Login";
 import ChangePassword from "./pages/password/ChangePassword";
 import Password from "./pages/password/Password";
