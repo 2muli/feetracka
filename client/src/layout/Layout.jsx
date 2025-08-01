@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/navbar/Navbar";
 import Sidebar from "../components/sidebar/Sidebar";
+import "./layout.css";
 
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -33,12 +34,12 @@ const Layout = () => {
         />
       </div>
 
-      <div className={`layout-body ${isSidebarOpen ? "sidebar-open" : ""}`}>
-        <div className="sidebar-area">
+      {/* Layout Wrapper */}
+      <div id="layoutWrapper" className={isSidebarOpen ? "" : "sidebar-hidden"}>
+        <div id="sidebarWrapper">
           <Sidebar isSidebarOpen={isSidebarOpen} searchTerm={searchTerm} />
         </div>
-
-        <div className="main-content">
+        <div id="mainContent">
           <Outlet />
         </div>
       </div>

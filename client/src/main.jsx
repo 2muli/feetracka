@@ -6,11 +6,6 @@ import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import App from "./App";
-<<<<<<< HEAD
-import "./App.css";
-=======
-import './App.css';
->>>>>>> c834c95 (Implement responsive layout and sidebar scroll fix)
 import AuthProvider from "./context/AuthProvider";
 
 const queryClient = new QueryClient();
