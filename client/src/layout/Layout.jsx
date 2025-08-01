@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import Navbar from "../components/navbar/Navbar";
 import Sidebar from "../components/sidebar/Sidebar";
-import "./layout.css";
+
 
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -21,22 +21,24 @@ const Layout = () => {
   }, [isSidebarOpen]);
 
   return (
-    <>
-      {/* Fixed Top Navbar */}
+    <div className="layout-root">
       <div className="fixed-navbar">
-        <Navbar toggleSidebar={toggleSidebar} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+        <Navbar
+          toggleSidebar={toggleSidebar}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+        />
       </div>
 
-      {/* Layout Wrapper */}
-      <div id="layoutWrapper" className={isSidebarOpen ? "" : "sidebar-hidden"}>
-        <div id="sidebarWrapper">
+      <div className={`layout-body ${isSidebarOpen ? "" : "sidebar-hidden"}`}>
+        <div className="sidebar-area">
           <Sidebar isSidebarOpen={isSidebarOpen} searchTerm={searchTerm} />
         </div>
-        <div id="mainContent">
+        <div className="main-content">
           <Outlet />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -43,7 +43,6 @@ const Register = () => {
 
     const { password, confirmPassword } = user;
 
-    // Validation
     if (password.length < 6) {
       return setError("Password must be at least 6 characters long");
     }
@@ -52,12 +51,11 @@ const Register = () => {
     if (!passwordRegex.test(password)) {
       return setError("Weak password. Must include uppercase, lowercase, number, and symbol.");
     }
-    
+
     if (password !== confirmPassword) {
       return setError("Password and confirm password do not match");
     }
 
-    // Prepare data (exclude confirmPassword)
     const { confirmPassword: _, ...submitData } = user;
 
     mutation.mutate(submitData);
