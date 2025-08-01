@@ -39,7 +39,7 @@ const Layout = () => {
         <div id="sidebarWrapper">
           <Sidebar isSidebarOpen={isSidebarOpen} searchTerm={searchTerm} />
         </div>
-        <div id="mainContent">
+        <div id="main-content">
           <Outlet />
         </div>
       </div>
