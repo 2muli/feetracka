@@ -66,7 +66,7 @@ html, body {
   .layout-body {
     flex-direction: column;
     height: auto;
-    overflow: visible;
+    overflow: auto;
   }
 
   .sidebar-area {
