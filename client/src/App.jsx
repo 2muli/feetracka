@@ -2,8 +2,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import { Route, Routes } from "react-router-dom";
 
-import ProtectedRoute from "./context/ProtectedRoute";
-
+import "./App.css";
 import About from "./components/about/About";
 import Contact from "./components/contact/Contact";
 import ForAccoutToActivated from "./components/contact/ForAccoutToActivated";
@@ -36,6 +35,7 @@ import ChangePasword from "./components/users/ChangePasword";
 import ManageAccount from "./components/users/ManageAccount";
 import Profile from "./components/users/Profile";
 import CookieExpire from "./context/CookieExpire";
+import ProtectedRoute from "./context/ProtectedRoute";
 import Dashboard from "./dasboard/Dashboard";
 import Error from "./error/Error";
 import Layout from "./layout/Layout";
