@@ -71,6 +71,7 @@ html, body {
   .main-content {
     height: auto;
     min-height: 100vh;
+    overflow-y: auto;
   }
 
   body.sidebar-open {
