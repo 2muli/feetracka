@@ -48,7 +48,7 @@ const AuthProvider = ({ children }) => {
       setSessionExpired(false);
       setHasLoggedInBefore(true); // ✅
       Cookies.set("user", JSON.stringify(res.data.user), { expires: 1 });
-      return { success: true };
+      return res.data.user;
     } catch (error) {
       throw new Error(error.response?.data?.error || "Login failed");
     }

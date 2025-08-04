@@ -1,6 +1,7 @@
 import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { confirmDialog } from 'primereact/confirmdialog';
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -26,17 +27,28 @@ const ViewStudents = () => {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this student?")) return;
-    try {
-      await axios.delete(`/students/${id}`);
-      toast.success("Student deleted successfully!");
-      fetchStudentsByClass(); // refetch after delete
-    } catch (err) {
-      console.error("Delete failed:", err);
-      toast.error("Failed to delete student");
-    }
+  const handleDelete = (id) => {
+    confirmDialog({
+      message: 'Do you want to delete this student?',
+      header: 'Delete Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      acceptClassName: 'p-button-danger',
+      accept: async () => {
+        try {
+          await axios.delete(`${import.meta.env.VITE_API_URL}/server/students/${id}`);
+          toast.success("Student deleted successfully");
+          fetchStudentsByClass(); // refresh list
+        } catch (err) {
+          console.error("Delete error:", err);
+          toast.error("Failed to delete payment");
+        }
+      },
+      reject: () => {
+        toast.info("Deletion cancelled");
+      }
+    });
   };
+  
   const handleExportPDF = () => {
     const doc = new jsPDF();
     doc.text(`Form ${studentClass} Students List`, 14, 15);

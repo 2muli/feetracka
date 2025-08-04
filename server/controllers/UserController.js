@@ -27,7 +27,7 @@ const successResponse = (res, status, data = {}) => {
 export const getUsers = async (req, res) => {
   try {
     const users = await query(
-      "SELECT id, first_name, second_name, last_name, email, phone, role, createdAt FROM users"
+      "SELECT id, first_name, second_name, last_name, email, phone, role,isActive, createdAt FROM users"
     );
     return successResponse(res, 200, { users });
   } catch (error) {
@@ -246,6 +246,19 @@ export const updateUser = async (req, res) => {
   } catch (error) {
     console.error("Error updating user:", error);
     return errorResponse(res, 500, "Internal server error");
+  }
+};
+// 🟢 9. TOGGLE USER ACTIVATION
+export const toggleUserActivation = async (req, res) => {
+  const userId = req.params.id;
+  const { isActive } = req.body;
+
+  try {
+    await db.query("UPDATE users SET isActive = ? WHERE id = ?", [isActive, userId]);
+    res.json({ message: "User status updated successfully" });
+  } catch (error) {
+    console.error("Toggle activation error:", error);
+    res.status(500).json({ error: "Server error updating user status" });
   }
 };
 

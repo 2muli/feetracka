@@ -1,7 +1,9 @@
 import axios from "axios";
+import { confirmDialog } from 'primereact/confirmdialog';
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+
 
 const ViewFee = () => {
   const [fees, setFees] = useState([]);
@@ -21,20 +23,28 @@ const ViewFee = () => {
     fetchFees();
   }, []);
 
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this fee?");
-    if (!confirmDelete) return;
-
-    try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/server/fees/${id}`);
-      toast.success("Fee deleted successfully!");
-      fetchFees();
-    } catch (err) {
-      console.error("Delete failed:", err);
-      toast.error("Something went wrong while deleting");
-    }
+   const handleDelete = (id) => {
+    confirmDialog({
+      message: 'Do you want to delete this fee?',
+      header: 'Delete Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      acceptClassName: 'p-button-danger',
+      accept: async () => {
+        try {
+          await axios.delete(`${import.meta.env.VITE_API_URL}/server/fees/${id}`);
+          toast.success("Fee deleted successfully");
+          fetchFees(); // refresh list
+        } catch (err) {
+          console.error("Delete error:", err);
+          toast.error("Failed to delete fee");
+        }
+      },
+      reject: () => {
+        toast.info("Deletion cancelled");
+      }
+    });
   };
-
+  
   // Pagination logic
   const totalPages = Math.ceil(fees.length / feesPerPage);
   const indexOfLastFee = currentPage * feesPerPage;

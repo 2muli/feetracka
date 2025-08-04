@@ -35,8 +35,8 @@ const Contact = () => {
           />
           <h3>Email Us</h3>
           <p>
-            <a href="mailto:info@agriconnect.com" className="contact-link">
-              info@agriconnect.com
+            <a href="mailto:mulimuthui41@gmail.com" className="contact-link">
+              Muli Muthui
             </a>
           </p>
         </div>
@@ -51,12 +51,12 @@ const Contact = () => {
           <h3>Follow on Facebook</h3>
           <p>
             <a
-              href="https://www.facebook.com/agriconnectkenya"
+              href="https://www.facebook.com/mulimuthui"
               target="_blank"
               rel="noopener noreferrer"
               className="contact-link"
             >
-              @AgriConnectKenya
+              @Muli Muthui
             </a>
           </p>
         </div>
@@ -71,12 +71,12 @@ const Contact = () => {
           <h3>Follow on Twitter</h3>
           <p>
             <a
-              href="https://twitter.com/agriconnectke"
+              href="https://twitter.com/muli"
               target="_blank"
               rel="noopener noreferrer"
               className="contact-link"
             >
-              @AgriConnectKE
+              @Muli Muthui
             </a>
           </p>
         </div>

@@ -4,6 +4,9 @@ import { Route, Routes } from "react-router-dom";
 
 import "./App.css";
 import About from "./components/about/About";
+import AddUser from "./components/clients/AddUser";
+import EditUser from "./components/clients/EditUser";
+import ViewUsers from "./components/clients/ViewUsers";
 import Contact from "./components/contact/Contact";
 import ForAccoutToActivated from "./components/contact/ForAccoutToActivated";
 import AddFees from "./components/feestructure/AddFees";
@@ -62,6 +65,9 @@ import Register from "./pages/register/Register";
         {/* Protected */}
         <Route element={<ProtectedRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/viewusers" element={<ViewUsers />} />
+          <Route path="/adduser" element={<AddUser />} />
+          <Route path="/edituser/:id" element={<EditUser />} />
           <Route path="/viewstudents" element={<ViewStudents />} />
           <Route path="/addstudent" element={<Addstudent />} />
           <Route path="/editstudent/:id" element={<Editstudent />} />

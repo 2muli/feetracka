@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
+import { confirmDialog } from 'primereact/confirmdialog';
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
+
 
 const ViewPayments = () => {
   const [payments, setPayments] = useState([]);
@@ -45,18 +47,28 @@ const ViewPayments = () => {
     return <div>Error loading balance</div>;
   }
 
-  // 🗑️ Handle Delete
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this payment?")) return;
-    try {
-      await axios.delete(`${import.meta.env.VITE_API_URL}/server/payments/${id}`);
-      toast.success("Payment deleted successfully");
-      fetchPayments(); // refresh
-    } catch (err) {
-      console.error("Delete error:", err);
-      toast.error("Failed to delete payment");
-    }
+  const handleDelete = (id) => {
+    confirmDialog({
+      message: 'Do you want to delete this payment?',
+      header: 'Delete Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      acceptClassName: 'p-button-danger',
+      accept: async () => {
+        try {
+          await axios.delete(`${import.meta.env.VITE_API_URL}/server/payments/${id}`);
+          toast.success("Payment deleted successfully");
+          fetchPayments(); // refresh list
+        } catch (err) {
+          console.error("Delete error:", err);
+          toast.error("Failed to delete payment");
+        }
+      },
+      reject: () => {
+        toast.info("Deletion cancelled");
+      }
+    });
   };
+  
 
   // 🔢 Pagination Logic
   const totalPages = Math.ceil(payments.length / paymentsPerPage);
@@ -68,6 +80,7 @@ const ViewPayments = () => {
   const prevPage = () => setCurrentPage((p) => Math.max(p - 1, 1));
   const nextPage = () => setCurrentPage((p) => Math.min(p + 1, totalPages));
 
+ 
   return (
     <main className="sb-nav-fixed">
       <div className="container-fluid px-4">
@@ -154,7 +167,9 @@ const ViewPayments = () => {
         )}
       </div>
     </main>
+  
   );
+  
 };
 
 export default ViewPayments;

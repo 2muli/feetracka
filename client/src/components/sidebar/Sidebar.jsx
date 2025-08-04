@@ -5,6 +5,8 @@ import "./sidebar.css";
 const Sidebar = ({ isSidebarOpen, searchTerm }) => {
   const { isAuthenticated, userDetails } = useAuth();
   const location = useLocation();
+  const isAdmin=userDetails?.user?.role;
+
   if (!isAuthenticated) return null;
 
   const normalizedSearch = searchTerm?.toLowerCase() || "";
@@ -24,6 +26,7 @@ const Sidebar = ({ isSidebarOpen, searchTerm }) => {
       heading: "Menu",
       links: [
         { to: "/viewstudents", icon: "bi bi-people", label: "Students" },
+        ...(isAdmin ? [{ to: "/viewusers", icon: "bi bi-people", label: "Users" }] : []),
         { to: "/viewfee", icon: "bi bi-cash-coin", label: "Fees" },
         { to: "/remedial", icon: "bi bi-cash-coin", label: "Remedials" },
       ],
@@ -81,7 +84,7 @@ const Sidebar = ({ isSidebarOpen, searchTerm }) => {
                         aria-expanded={isFeeActive}
                         aria-controls="collapseFeeStructure"
                       >
-                        <i className="fas fa-columns me-2"></i> Payments
+                        <i className="fas fa-columns me-2"></i> School Fees
                         <i className="fas fa-angle-down float-end"></i>
                       </a>
                       <div
@@ -95,7 +98,7 @@ const Sidebar = ({ isSidebarOpen, searchTerm }) => {
                               to="/viewPayment"
                               className={location.pathname === "/viewPayment" ? "active" : ""}
                             >
-                              <i className="bi bi-coin me-1" /> Payment
+                              <i className="bi bi-coin me-1" />For Fee
                             </Link>
                           </li>
                           <li>
@@ -105,7 +108,7 @@ const Sidebar = ({ isSidebarOpen, searchTerm }) => {
                                 location.pathname === "/viewremedialpayments" ? "active" : ""
                               }
                             >
-                              <i className="bi bi-coin me-1" /> Remedial Payments
+                              <i className="bi bi-coin me-1" />For Remedial
                             </Link>
                           </li>
                         </ul>

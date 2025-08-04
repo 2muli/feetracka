@@ -1,38 +1,18 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-// API fetchers
-const fetchStudentCount = async () => {
-  const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/students/studentNumber`, { withCredentials: true });
-  return res.data.count;
-};
-
-const fetchTodayPayment = async () => {
-  const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/payments/todayPayments`, { withCredentials: true });
-  return res.data.totalPaidToday;
-};
-
-const fetchTotalPayment = async () => {
-  const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/payments/getTotalPayments`, { withCredentials: true });
-  return res.data.totalPaid;
-};
-
-const fetchBalance = async () => {
-  const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/payments/getBalance`, { withCredentials: true });
-  return res.data.balance;
-};
-
-const fetchLatestStudents = async () => {
-  const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/students/getLatestStudents`, { withCredentials: true });
+const fetcher = async (url) => {
+  const res = await axios.get(`${import.meta.env.VITE_API_URL}${url}`, { withCredentials: true });
   return res.data;
 };
 
 const Dashboard = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, loading,userDetails } = useAuth();
+  const { isAuthenticated, loading, userDetails } = useAuth();
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -40,129 +20,94 @@ const Dashboard = () => {
     }
   }, [isAuthenticated, loading, navigate]);
 
-  // Queries
-  const { data: studentCount, isLoading: isLoadingStudents, isError: isErrorStudents, error: errorStudents } = useQuery({
+  useEffect(() => {
+    const interval = setInterval(() => setCurrentTime(new Date()), 60000);
+    return () => clearInterval(interval);
+  }, []);
+  const greeting = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "🌞 Good morning";
+    if (hour < 17) return "🌤️ Good afternoon";
+    if (hour < 21) return "🌇 Good evening";
+    return "🌙 Good night";
+  }, [new Date().getHours()]);
+
+  const { data: studentCount, isLoading: loadingStudents, error: errorStudents } = useQuery({
     queryKey: ['studentCount'],
-    queryFn: fetchStudentCount,
+    queryFn: () => fetcher('/server/students/studentNumber').then(data => data.count),
     enabled: isAuthenticated,
   });
 
-  const { data: todayPayment, isLoading: isLoadingToday, isError: isErrorToday, error: errorToday } = useQuery({
+  const { data: todayPayment, isLoading: loadingToday, error: errorToday } = useQuery({
     queryKey: ['todayPayment'],
-    queryFn: fetchTodayPayment,
+    queryFn: () => fetcher('/server/payments/todayPayments').then(data => data.totalPaidToday),
     enabled: isAuthenticated,
   });
 
-  const { data: totalPayment, isLoading: isLoadingTotal, isError: isErrorTotal, error: errorTotal } = useQuery({
+  const { data: totalPayment, isLoading: loadingTotal, error: errorTotal } = useQuery({
     queryKey: ['totalPayment'],
-    queryFn: fetchTotalPayment,
+    queryFn: () => fetcher('/server/payments/getTotalPayments').then(data => data.totalPaid),
     enabled: isAuthenticated,
   });
 
-  const { data: balance, isLoading: isLoadingBalance, isError: isErrorBalance, error: errorBalance } = useQuery({
+  const { data: balance, isLoading: loadingBalance, error: errorBalance } = useQuery({
     queryKey: ['balance'],
-    queryFn: fetchBalance,
+    queryFn: () => fetcher('/server/payments/getBalance').then(data => data.balance),
     enabled: isAuthenticated,
   });
 
-  const { data: latestStudents = [], isLoading: isLoadingLatest, isError: isErrorLatest } = useQuery({
+  const { data: latestStudents = [], isLoading: loadingLatest, error: errorLatest } = useQuery({
     queryKey: ['latestStudents'],
-    queryFn: fetchLatestStudents,
+    queryFn: () => fetcher('/server/students/getLatestStudents'),
     enabled: isAuthenticated,
   });
-if (!isAuthenticated) {
-    return <div className="text-white p-4">You must be logged in to view this page.</div>;
-  }
+
   if (loading) return <div className="text-white p-4">Checking authentication...</div>;
+  if (!isAuthenticated) return <div className="text-white p-4">You must be logged in to view this page.</div>;
 
   return (
     <div className="sb-nav-fixed d-flex">
-
       <main id="layoutSidenav_content" className="w-100">
         <div className="container-fluid px-4">
         <h1 className="mt-4">
-  Welcome{" "}
-  {userDetails?.user?.firstName && userDetails?.user?.lastName
-    ? `${userDetails.user.firstName} ${userDetails.user.lastName}`
-    : "Malioni Clerk"}
-</h1>
+        {greeting},{" "}
+      {userDetails?.user?.firstName && userDetails?.user?.lastName
+        ? `${userDetails.user.firstName} ${userDetails.user.lastName}`
+        : "Malioni Clerk"}{" "}
+      👋
+    </h1>
 
-          {/* Stats Cards */}
           <div className="row">
-            {/* Student Count */}
-            <div className="col-xl-3 col-md-6">
-              <div className="card bg-success text-white mb-4">
-                <div className="card-body">
-                  <small>Total Students:</small>{' '}
-                  <strong>
-                    {isLoadingStudents ? 'Loading...' : isErrorStudents ? errorStudents.message : studentCount}
-                  </strong>
-                </div>
-                <div className="card-footer d-flex align-items-center justify-content-between">
-                  <Link to="/viewStudents" className="small text-white stretched-link">View Details</Link>
-                  <div className="small text-white"><i className="fas fa-angle-right"></i></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Today's Payment */}
-            <div className="col-xl-3 col-md-6">
-              <div className="card bg-warning text-white mb-4">
-                <div className="card-body">
-                  <small>Today's Payment:</small>{' '}
-                  <strong>
-                    {isLoadingToday ? 'Loading...' : isErrorToday ? errorToday.message : `KES ${todayPayment?.toLocaleString()}`}
-                  </strong>
-                </div>
-                <div className="card-footer d-flex align-items-center justify-content-between">
-                  <Link to="/viewPayment" className="small text-white stretched-link">View Details</Link>
-                  <div className="small text-white"><i className="fas fa-angle-right"></i></div>
+            {[
+              { title: 'Total Students', value: studentCount, loading: loadingStudents, error: errorStudents, link: '/viewStudents', color: 'success' },
+              { title: "Today's Payment", value: todayPayment, loading: loadingToday, error: errorToday, link: '/viewPayment', color: 'warning' },
+              { title: 'Total Payment', value: totalPayment, loading: loadingTotal, error: errorTotal, link: '/viewPayment', color: 'danger' },
+              { title: 'Balance', value: balance, loading: loadingBalance, error: errorBalance, link: '/viewPayment', color: 'info' }
+            ].map(({ title, value, loading, error, link, color }, idx) => (
+              <div className="col-xl-3 col-md-6" key={idx}>
+                <div className={`card bg-${color} text-white mb-4`}>
+                  <div className="card-body">
+                    <small>{title}:</small>{' '}
+                    <strong>
+                      {loading ? 'Loading...' : error ? error.message : `KES ${Number(value).toLocaleString()}`}
+                    </strong>
+                  </div>
+                  <div className="card-footer d-flex align-items-center justify-content-between">
+                    <Link to={link} className="small text-white stretched-link">View Details</Link>
+                    <div className="small text-white"><i className="fas fa-angle-right"></i></div>
+                  </div>
                 </div>
               </div>
-            </div>
-
-            {/* Total Payment */}
-            <div className="col-xl-3 col-md-6">
-              <div className="card bg-danger text-white mb-4">
-                <div className="card-body">
-                  <small>Total Payment:</small>{' '}
-                  <strong>
-                    {isLoadingTotal ? 'Loading...' : isErrorTotal ? errorTotal.message : `KES ${totalPayment?.toLocaleString()}`}
-                  </strong>
-                </div>
-                <div className="card-footer d-flex align-items-center justify-content-between">
-                  <Link to="/viewPayment" className="small text-white stretched-link">View Details</Link>
-                  <div className="small text-white"><i className="fas fa-angle-right"></i></div>
-                </div>
-              </div>
-            </div>
-
-            {/* Balance */}
-            <div className="col-xl-3 col-md-6">
-              <div className="card bg-info text-white mb-4">
-                <div className="card-body">
-                  <small>Balance:</small>{' '}
-                  <strong>
-                    {isLoadingBalance ? 'Loading...' : isErrorBalance ? errorBalance.message : `KES ${balance?.toLocaleString()}`}
-                  </strong>
-                </div>
-                <div className="card-footer d-flex align-items-center justify-content-between">
-                  <Link to="/viewPayment" className="small text-white stretched-link">View Details</Link>
-                  <div className="small text-white"><i className="fas fa-angle-right"></i></div>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
 
-          {/* Latest Students Table */}
           <div className="card mb-4">
-            <div className="card-header">
-              <i className="bi bi-people me-1"></i>
-              Ten Latest Students
-              <Link to="/viewStudents" className="d-flex justify-content-end">View Details</Link>
+            <div className="card-header d-flex justify-content-between">
+              <div><i className="bi bi-people me-1"></i>Ten Latest Students</div>
+              <Link to="/viewStudents">View Details</Link>
             </div>
             <div className="card-body">
-              <table id="datatablesSimple" className='table table-hover table-striped'>
+              <table className='table table-hover table-striped'>
                 <thead>
                   <tr>
                     <th>#</th>
@@ -174,21 +119,21 @@ if (!isAuthenticated) {
                   </tr>
                 </thead>
                 <tbody>
-                  {isLoadingLatest ? (
-                    <tr><td colSpan="6">Loading latest students...</td></tr>
-                  ) : isErrorLatest ? (
+                  {loadingLatest ? (
+                    <tr><td colSpan="6">Loading...</td></tr>
+                  ) : errorLatest ? (
                     <tr><td colSpan="6">Error loading students</td></tr>
                   ) : latestStudents.length === 0 ? (
                     <tr><td colSpan="6">No recent students found.</td></tr>
                   ) : (
-                    latestStudents.map((student, index) => (
-                      <tr key={student.id}>
-                        <td>{index + 1}</td>
-                        <td>{`${student.first_name} ${student.second_name} ${student.last_name}`}</td>
-                        <td>{student.student_AdmNo}</td>
-                        <td>{student.class}</td>
-                        <td>{student.parent_name}</td>
-                        <td>{student.parent_contact}</td>
+                    latestStudents.map((s, i) => (
+                      <tr key={s.id}>
+                        <td>{i + 1}</td>
+                        <td>{`${s.first_name} ${s.second_name} ${s.last_name}`}</td>
+                        <td>{s.student_AdmNo}</td>
+                        <td>{s.class}</td>
+                        <td>{s.parent_name}</td>
+                        <td>{s.parent_contact}</td>
                       </tr>
                     ))
                   )}
@@ -196,7 +141,6 @@ if (!isAuthenticated) {
               </table>
             </div>
           </div>
-
         </div>
       </main>
     </div>
