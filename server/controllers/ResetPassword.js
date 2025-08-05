@@ -26,7 +26,7 @@ export const sendResetEmail = async (req, res) => {
     );
 
     // Step 3: Create reset link (send raw token in URL)
-    const resetLink = `${process.env.FRONTEND_URL}/change-password/${rawToken}`;
+    const resetLink = `${process.env.FRONTEND_URL_EMAIL}/change-password/${rawToken}`;
 
     // Step 4: Configure Gmail SMTP
     const transporter = nodemailer.createTransport({
