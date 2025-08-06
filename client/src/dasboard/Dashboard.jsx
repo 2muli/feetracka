@@ -24,6 +24,7 @@ const Dashboard = () => {
     const interval = setInterval(() => setCurrentTime(new Date()), 60000);
     return () => clearInterval(interval);
   }, []);
+
   const greeting = useMemo(() => {
     const hour = new Date().getHours();
     if (hour < 12) return "🌞 Good morning";
@@ -69,13 +70,13 @@ const Dashboard = () => {
     <div className="sb-nav-fixed d-flex">
       <main id="layoutSidenav_content" className="w-100">
         <div className="container-fluid px-4">
-        <h1 className="mt-4">
-        {greeting},{" "}
-      {userDetails?.user?.firstName && userDetails?.user?.lastName
-        ? `${userDetails.user.firstName} ${userDetails.user.lastName}`
-        : "Malioni Clerk"}{" "}
-      👋
-    </h1>
+          <h1 className="mt-4">
+            {greeting},{" "}
+            {userDetails?.user?.firstName && userDetails?.user?.lastName
+              ? `${userDetails.user.firstName} ${userDetails.user.lastName}`
+              : "Malioni Clerk"}{" "}
+            👋
+          </h1>
 
           <div className="row">
             {[
@@ -89,7 +90,11 @@ const Dashboard = () => {
                   <div className="card-body">
                     <small>{title}:</small>{' '}
                     <strong>
-                      {loading ? 'Loading...' : error ? error.message : `KES ${Number(value).toLocaleString()}`}
+                      {loading
+                        ? 'Loading...'
+                        : error
+                          ? error.message
+                          : `${title === 'Total Students' ? '' : 'KES '}${Number(value).toLocaleString()}`}
                     </strong>
                   </div>
                   <div className="card-footer d-flex align-items-center justify-content-between">

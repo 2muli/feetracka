@@ -99,6 +99,10 @@ db.connect((err) => {
     console.log("✅ Connected to MySQL database.");
   }
 });
+//Prevent sleeping of backend after deployment
+app.get('/healthcheck', (req, res) => {
+  res.send('Backend is alive 💖');
+});
 
 // Start Server
 const PORT = process.env.PORT || 8800;
