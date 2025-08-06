@@ -6,7 +6,7 @@ const Contact = () => {
     <div className="contact-container">
       <h1>Contact Us</h1>
       <p>
-      <h6>if you have any questions, feedback, or need support. We are here to help you with any inquiries you may have regarding our services, features, or any other aspect of our platform. Your satisfaction is our priority, and we aim to provide you with the best possible assistance. Whether you need help with account activation, have questions about our offerings, or simply want to share your thoughts, please don't hesitate to reach out to us. We value your input and are committed to ensuring you have a positive experience with our services. Our team is ready to assist you promptly and efficiently, so feel free to get in touch with us at any time. Thank you    
+      <h6>If you have any questions, feedback, or need support. We are here to help you with any inquiries you may have regarding our services, features, or any other aspect of our platform. Your satisfaction is our priority, and we aim to provide you with the best possible assistance. Whether you need help with account activation, have questions about our offerings, or simply want to share your thoughts, please don't hesitate to reach out to us. We value your input and are committed to ensuring you have a positive experience with our services. Our team is ready to assist you promptly and efficiently, so feel free to get in touch with us at any time. Thank you    
         </h6>
       </p>
       {/* Contact Options */}
@@ -14,7 +14,7 @@ const Contact = () => {
         {/* Phone */}
         <div className="contact-card">
           <img
-            src="images/whatApp.png"
+            src="images/what.jpg"
             alt="Call Icon"
             className="contact-icon"
           />
@@ -64,11 +64,11 @@ const Contact = () => {
         {/* Twitter */}
         <div className="contact-card">
           <img
-            src="images/twitter.png"
+            src="images/twitter.jpg"
             alt="Twitter Icon"
             className="contact-icon"
           />
-          <h3>Follow on Twitter</h3>
+          <h3>Follow on X</h3>
           <p>
             <a
               href="https://twitter.com/muli"
