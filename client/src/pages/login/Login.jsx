@@ -9,7 +9,6 @@ import "./login.css";
 
 const Login = () => {
   const [inputs, setInputs] = useState({ email: "", password: "" });
-  const {userDetails} = useAuth();
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -20,20 +19,19 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const loggedUser = await login(inputs); // get fresh data
-      console.log(loggedUser);
-  
-      if (loggedUser.isActive !== 1) {
+      const user = await login(inputs);
+
+      if (user.isActive !== 1) {
         navigate("/for-account-to-activated");
       } else {
         toast.success("Login successful");
         navigate("/dashboard");
       }
-    } catch (err) {
-      toast.error(err.response?.data?.error || "Login failed");
+    } catch (error) {
+      toast.error(error.message || "Login failed");
     }
   };
-  
+
   return (
     <main>
       <div className="container">
@@ -48,15 +46,15 @@ const Login = () => {
                   Welcome back! Please enter your credentials to continue.
                 </h5>
 
-                  <form onSubmit={handleSubmit}>
+                <form onSubmit={handleSubmit}>
                   <div className="form-floating mb-3">
                     <input
+                      type="email"
+                      className="form-control"
+                      id="inputEmail"
                       name="email"
                       value={inputs.email}
                       onChange={handleChange}
-                      className="form-control"
-                      id="inputEmail"
-                      type="email"
                       placeholder="name@example.com"
                       required
                     />
@@ -65,27 +63,16 @@ const Login = () => {
 
                   <div className="form-floating mb-3">
                     <input
+                      type="password"
+                      className="form-control"
+                      id="inputPassword"
                       name="password"
                       value={inputs.password}
                       onChange={handleChange}
-                      className="form-control"
-                      id="inputPassword"
-                      type="password"
                       placeholder="Password"
                       required
                     />
                     <label htmlFor="inputPassword">Password</label>
-                  </div>
-
-                  <div className="form-check mb-3">
-                    <input
-                      className="form-check-input"
-                      id="inputRememberPassword"
-                      type="checkbox"
-                    />
-                    <label className="form-check-label" htmlFor="inputRememberPassword">
-                      Remember Password
-                    </label>
                   </div>
 
                   <div className="d-flex align-items-center justify-content-between mt-4 mb-0">

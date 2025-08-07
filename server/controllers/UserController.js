@@ -97,42 +97,36 @@ export const Register = async (req, res) => {
   }
 };
 // 🟢 3. LOGIN (Fixed implementation)
+// controllers/auth.js
 export const login = async (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ error: "Email and password are required" });
 
-  if (!email || !password) {
-    return errorResponse(res, 400, "Email and password are required");
-  }
   try {
     const [user] = await query(
       "SELECT id, first_name, last_name, email, password, role, isActive FROM users WHERE email = ?",
       [email]
     );
 
-    if (!user || !user.password) {
-      return errorResponse(res, 401, "Invalid credentials");
-    }
-
-    const passwordMatch = await bcrypt.compare(password, user.password);
-    if (!passwordMatch) {
-      return errorResponse(res, 401, "Invalid credentials");
+    if (!user || !await bcrypt.compare(password, user.password)) {
+      return res.status(401).json({ error: "Invalid credentials" });
     }
 
     const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role, isActive: user.isActive },
       process.env.JWT_SECRET,
-      { expiresIn: "1d" } // 1 day
+      { expiresIn: "1d" }
     );
 
     res.cookie("access_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      maxAge: 60 * 60 * 24 * 1000, // 1 day
+      maxAge: 86400000,
       path: "/",
     });
 
-    return successResponse(res, 200, {
+    return res.status(200).json({
       user: {
         id: user.id,
         firstName: user.first_name,
@@ -140,13 +134,14 @@ export const login = async (req, res) => {
         email: user.email,
         role: user.role,
         isActive: user.isActive,
-      },
+      }
     });
-  } catch (error) {
-    console.error("Login error:", error);
-    return errorResponse(res, 500, "Internal server error");
+  } catch (err) {
+    console.error("Login error:", err);
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 
 // 🟢 4. VERIFY TOKEN MIDDLEWARE (Fixed implementation)

@@ -8,58 +8,56 @@ import { db } from "./connectDB.js";
 // Load environment variables
 dotenv.config();
 
-// Initialize app and server
+// Create Express app and HTTP server
 const app = express();
 const server = http.createServer(app);
 
-// Configure allowed origins
+// === CORS Configuration ===
 const allowedOrigins = [
   "http://localhost:5173",
   "https://feetracka.vercel.app",
-  "https://feetracka-*.vercel.app",
   "https://feetracka-muli-muthuis-projects.vercel.app",
   "https://feetracka-pmihxfav4-muli-muthuis-projects.vercel.app",
   process.env.FRONTEND_URL
 ].filter(Boolean);
 
-// Enhanced CORS configuration
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true);
-      
-      const isAllowed = allowedOrigins.some(allowedOrigin => {
-        if (allowedOrigin.includes('*')) {
-          const regex = new RegExp(allowedOrigin.replace('*', '.*'));
+      if (!origin) return callback(null, true); // Allow non-browser tools
+      const allowed = allowedOrigins.some((allowedOrigin) => {
+        if (allowedOrigin.includes("*")) {
+          const regex = new RegExp(allowedOrigin.replace("*", ".*"));
           return regex.test(origin);
         }
         return allowedOrigin === origin;
       });
-
-      if (isAllowed) {
-        callback(null, true);
-      } else {
-        console.warn(`Blocked by CORS: ${origin}`);
-        callback(new Error('Not allowed by CORS'));
-      }
+      if (allowed) return callback(null, true);
+      console.warn(`Blocked by CORS: ${origin}`);
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With"],
-    optionsSuccessStatus: 200
+    allowedHeaders: ["Content-Type", "Authorization"],
+    optionsSuccessStatus: 200,
   })
 );
 
-// Middleware
+// === Middleware ===
 app.use(cookieParser());
 app.use(express.json());
 
-// Basic health route
+// === Health Check to prevent Render sleeping ===
+app.get("/healthcheck", (req, res) => {
+  res.send("✅ Backend is alive 💖");
+});
+
+// === Home route ===
 app.get("/", (req, res) => {
   res.send("✅ Backend is running successfully on Render!");
 });
 
-// Import and use routes carefully
+// === Routes ===
 import feeRoutes from "./routes/feestructure.js";
 import paymentRoutes from "./routes/payment.js";
 import remedialRoutes from "./routes/remedial.js";
@@ -68,44 +66,34 @@ import resetPasswordRoutes from "./routes/resetPassword.js";
 import studentRoutes from "./routes/students.js";
 import userRoutes from "./routes/users.js";
 
-// Apply routes with error handling
-try {
-  app.use("/server/fees", feeRoutes);
-  app.use("/server/remedials", remedialRoutes);
-  app.use("/server/payments", paymentRoutes);
-  app.use("/server/students", studentRoutes);
-  app.use("/server/remedialPayments", remedialPaymentRoutes);
-  app.use("/server/users", userRoutes);
-  app.use("/server/resetPassword", resetPasswordRoutes);
-} catch (err) {
-  console.error("Route initialization error:", err);
-  process.exit(1);
-}
+app.use("/server/fees", feeRoutes);
+app.use("/server/payments", paymentRoutes);
+app.use("/server/remedials", remedialRoutes);
+app.use("/server/remedialPayments", remedialPaymentRoutes);
+app.use("/server/resetPassword", resetPasswordRoutes);
+app.use("/server/students", studentRoutes);
+app.use("/server/users", userRoutes);
 
-// Error handling middleware
+// === Error Handler ===
 app.use((err, req, res, next) => {
-  console.error('Server Error:', err);
+  console.error("Server error:", err);
   res.status(500).json({
     success: false,
-    error: 'Internal Server Error'
+    message: "Internal server error",
   });
 });
 
-// Connect DB
+// === Connect to DB ===
 db.connect((err) => {
   if (err) {
-    console.error("❌ Failed to connect to MySQL:", err.message);
+    console.error("❌ MySQL connection error:", err.message);
   } else {
-    console.log("✅ Connected to MySQL database.");
+    console.log("✅ Connected to MySQL");
   }
 });
-//Prevent sleeping of backend after deployment
-app.get('/healthcheck', (req, res) => {
-  res.send('Backend is alive 💖');
-});
 
-// Start Server
+// === Start Server ===
 const PORT = process.env.PORT || 8800;
 server.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🚀 Server is running on port ${PORT}`);
 });

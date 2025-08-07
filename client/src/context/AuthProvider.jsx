@@ -1,29 +1,29 @@
+// src/context/AuthProvider.jsx
 import axios from "axios";
 import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import CookieExpire from "./CookieExpire";
 
-axios.defaults.baseURL = `${import.meta.env.VITE_API_URL}/server`;
+axios.defaults.baseURL = import.meta.env.VITE_API_URL + "/server";
 axios.defaults.withCredentials = true;
 
 const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userDetails, setUserDetails] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [sessionExpired, setSessionExpired] = useState(false);
-  const [hasLoggedInBefore, setHasLoggedInBefore] = useState(false); // 🆕 key
+  const [hasLoggedInBefore, setHasLoggedInBefore] = useState(false);
 
   const fetchUser = async () => {
     try {
       const res = await axios.get("/users/loggedUser");
       setUserDetails(res.data);
       setIsAuthenticated(true);
-      setHasLoggedInBefore(true); // ✅ user was authenticated before
-      Cookies.set("user", JSON.stringify(res.data), { expires: 1 }); // 1 day
+      setHasLoggedInBefore(true);
+      Cookies.set("user", JSON.stringify(res.data), { expires: 1 });
     } catch (error) {
       if (error.response?.status === 401 && hasLoggedInBefore) {
-        // ✅ Only show modal if token expired after being logged in
         setSessionExpired(true);
       }
       setIsAuthenticated(false);
@@ -35,36 +35,37 @@ const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    const interval = setInterval(fetchUser, 10000); // check every 10s
-    fetchUser(); // initial
+    fetchUser();
+    const interval = setInterval(fetchUser, 15000); // check every 15s
     return () => clearInterval(interval);
   }, []);
 
   const login = async ({ email, password }) => {
     try {
       const res = await axios.post("/users/login", { email, password });
-      setUserDetails(res.data.user);
+      const user = res.data.user;
+      setUserDetails(user);
       setIsAuthenticated(true);
       setSessionExpired(false);
-      setHasLoggedInBefore(true); // ✅
-      Cookies.set("user", JSON.stringify(res.data.user), { expires: 1 });
-      return res.data.user;
-    } catch (error) {
-      throw new Error(error.response?.data?.error || "Login failed");
+      setHasLoggedInBefore(true);
+      Cookies.set("user", JSON.stringify(user), { expires: 1 });
+      return user;
+    } catch (err) {
+      throw new Error(err.response?.data?.error || "Login failed");
     }
   };
 
   const logout = async () => {
     try {
       await axios.post("/users/logout");
-    } catch (error) {
-      console.error("Logout error:", error);
+    } catch (err) {
+      console.error("Logout failed:", err);
     } finally {
       Cookies.remove("user");
       setUserDetails(null);
       setIsAuthenticated(false);
       setSessionExpired(false);
-      setHasLoggedInBefore(false); // 🧼 clear this too
+      setHasLoggedInBefore(false);
     }
   };
 
