@@ -46,7 +46,7 @@ export const Register = async (req, res) => {
     phone,
     password,
   } = req.body;
- const role="clerk";
+ const role=0;
   // Validate required fields
   if (!firstName || !lastName || !email || !phone || !password) {
     return errorResponse(res, 400, "Required fields are missing");
