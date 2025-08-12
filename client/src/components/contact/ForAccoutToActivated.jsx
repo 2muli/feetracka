@@ -13,7 +13,7 @@ const ForAccoutToActivated = () => {
         {/* Phone */}
         <div className="contact-card">
           <img
-            src="images/whatApp.png"
+            src="images/what.jpg"
             alt="Call Icon"
             className="contact-icon"
           />
