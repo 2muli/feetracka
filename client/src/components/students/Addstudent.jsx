@@ -126,7 +126,7 @@ const AddStudent = () => {
 </select>
           </div>
 
-          {/* Parent Name */}
+          {/* Parent Name 
           <div className="form-group mb-2">
             <label>Parent Name</label>
             <input
@@ -138,9 +138,9 @@ const AddStudent = () => {
               onChange={handleChange}
               required
             />
-          </div>
+          </div>*/}
 
-          {/* Parent Contact */}
+          {/* Parent Contact 
           <div className="form-group mb-2">
             <label>Parent Contact</label>
             <input
@@ -153,7 +153,7 @@ const AddStudent = () => {
               required
             />
           </div>
-
+*/}
           <button type="submit" className="btn btn-success mt-3" disabled={isLoading}>
             {isLoading ? "Submitting..." : "Submit"}
           </button>
