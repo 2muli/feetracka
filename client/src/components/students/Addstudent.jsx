@@ -12,8 +12,6 @@ const AddStudent = () => {
     lastName: "",
     admissionNo: "", // Will be handled as a number input
     className: "", // Default selected value
-    parentName: "",
-    parentContact: "",
   });
 
   const { mutate, isLoading, isError, isSuccess, error, data } = useMutation({
