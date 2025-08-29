@@ -26,9 +26,7 @@ export const addStudent = async (req, res) => {
     !secondName ||
     !lastName ||
     !admissionNo ||
-    !className ||
-    !parentName ||
-    !parentContact
+    !className
   ) {
     return res.status(400).json({ error: "All fields are required" });
   }
@@ -87,9 +85,7 @@ export const updateStudent = async (req, res) => {
     !secondName ||
     !lastName ||
     !admissionNo ||
-    !className ||
-    !parentName ||
-    !parentContact
+    !className 
   ) {
     return res.status(400).json({ error: "All fields are required" });
   }
