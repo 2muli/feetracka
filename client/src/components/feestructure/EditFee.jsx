@@ -49,7 +49,11 @@ const EditFees = () => {
       });
     }
   }, [fee]);
-
+if (isLoading) return <div><BarLoader
+  height={10}
+  speedMultiplier={0}
+  width={123}
+/></div>; 
   // Update mutation
   const {
     mutate,

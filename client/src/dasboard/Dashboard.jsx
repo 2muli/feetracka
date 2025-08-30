@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { BarLoader } from "react-spinners";
 import { useAuth } from '../context/AuthContext';
 
 const fetcher = async (url) => {
@@ -91,7 +92,11 @@ const Dashboard = () => {
                     <small>{title}:</small>{' '}
                     <strong>
                       {loading
-                        ? 'Loading...'
+                        ? `${title === 'Total Students' ? '' : 'KES '}${<BarLoader
+                        height={10}
+                        speedMultiplier={0}
+                        width={123}
+                        />}`
                         : error
                           ? error.message
                           : `${title === 'Total Students' ? '' : 'KES '}${Number(value).toLocaleString()}`}
@@ -119,13 +124,15 @@ const Dashboard = () => {
                     <th>Full Name</th>
                     <th>Adm No.</th>
                     <th>Form</th>
-                    <th>Parent Name</th>
-                    <th>Parent Contact</th>
                   </tr>
                 </thead>
                 <tbody>
                   {loadingLatest ? (
-                    <tr><td colSpan="6">Loading...</td></tr>
+                    <tr><td colSpan="6"><BarLoader
+                    height={10}
+                    speedMultiplier={0}
+                    width={123}
+                    /></td></tr>
                   ) : errorLatest ? (
                     <tr><td colSpan="6">Error loading students</td></tr>
                   ) : latestStudents.length === 0 ? (
@@ -137,8 +144,6 @@ const Dashboard = () => {
                         <td>{`${s.first_name} ${s.second_name} ${s.last_name}`}</td>
                         <td>{s.student_AdmNo}</td>
                         <td>{s.class}</td>
-                        <td>{s.parent_name}</td>
-                        <td>{s.parent_contact}</td>
                       </tr>
                     ))
                   )}

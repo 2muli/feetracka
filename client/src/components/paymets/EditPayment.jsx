@@ -2,8 +2,8 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { BarLoader } from "react-spinners";
 import { toast } from "react-toastify";
-
 // Fetch payment by ID
 const fetchPaymentById = async (id) => {
   const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/payments/${id}`);
@@ -85,7 +85,12 @@ const EditPayment = () => {
         <h1 className="mt-4">Edit Payment</h1>
 
         {isLoading ? (
-          <p>Loading payment data...</p>
+          <p><BarLoader
+          cssOverride={{}}
+          height={9}
+          speedMultiplier={0}
+          width={100}
+        /></p>
         ) : isError ? (
           <div className="alert alert-danger">Error: {error?.message}</div>
         ) : (

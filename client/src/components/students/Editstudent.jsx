@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { BarLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -95,7 +96,11 @@ const EditStudent = () => {
       <div className="container-fluid px-4">
         <h1 className="mt-4">Edit Student</h1>
 
-        {isLoading && <p>Loading student data...</p>}
+        {isLoading && <p><BarLoader
+        height={10}
+        speedMultiplier={0}
+        width={123}
+        /></p>}
 
         {isError && (
           <div className="alert alert-danger">

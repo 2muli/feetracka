@@ -4,6 +4,7 @@ import autoTable from "jspdf-autotable";
 import { confirmDialog } from 'primereact/confirmdialog';
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { BarLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
@@ -12,6 +13,7 @@ const ViewStudents = () => {
   const [students, setStudents] = useState([]);
   const [studentClass, setStudentClass] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const studentsPerPage = 10;
 
   // 💡 Fetch students by class
@@ -90,6 +92,13 @@ const ViewStudents = () => {
   const indexOfFirst = indexOfLast - studentsPerPage;
   const currentStudents = students.slice(indexOfFirst, indexOfLast);
 
+  if(isLoading){
+    return <span><BarLoader
+    height={10}
+    speedMultiplier={0}
+    width={123}
+    /></span>
+  }
   return (
     <main className="sb-nav-fixed">
       <style>{`
@@ -159,8 +168,6 @@ const ViewStudents = () => {
                 <td>{`${student.first_name} ${student.second_name} ${student.last_name}`}</td>
                 <td>{student.student_AdmNo}</td>
                 <td>{student.class}</td>
-                <td>{student.parent_name}</td>
-                <td>{student.parent_contact}</td>
                 <td>
                   <Link to={`/editstudent/${student.id}`}>
                     <button className="btn btn-primary btn-sm me-2 no-print">Edit</button>

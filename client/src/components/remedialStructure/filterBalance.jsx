@@ -2,9 +2,10 @@ import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useState } from "react";
+import { BarLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
-  
+
 const FilterStudentsByBalance = () => {
   const { isAuthenticated, loading } = useAuth();
   const [students, setStudents] = useState([]);
@@ -18,7 +19,11 @@ const FilterStudentsByBalance = () => {
     return null;
     }
   if(loading){
-    return <span>Loading wait for a minute</span>
+    return <span><BarLoader
+    height={10}
+    speedMultiplier={0}
+    width={123}
+    /></span>
   }
   const handleSearch = async () => {
     if (!studentClass || !term || minBalance === "") {

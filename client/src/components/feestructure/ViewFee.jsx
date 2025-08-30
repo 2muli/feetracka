@@ -2,27 +2,35 @@ import axios from "axios";
 import { confirmDialog } from 'primereact/confirmdialog';
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { BarLoader } from "react-spinners";
 import { toast } from "react-toastify";
-
 
 const ViewFee = () => {
   const [fees, setFees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const feesPerPage = 10;
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchFees = async () => {
+    setIsLoading(true);
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/fees`);
       setFees(res.data);
     } catch (err) {
       console.error("Failed to fetch fees:", err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchFees();
   }, []);
-
+if (isLoading) return <div><BarLoader
+  height={10}
+  speedMultiplier={0}
+  width={123}
+/></div>;
    const handleDelete = (id) => {
     confirmDialog({
       message: 'Do you want to delete this fee?',

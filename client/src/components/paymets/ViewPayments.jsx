@@ -3,8 +3,8 @@ import axios from "axios";
 import { confirmDialog } from 'primereact/confirmdialog';
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { BarLoader } from "react-spinners";
 import { toast } from "react-toastify";
-
 
 const ViewPayments = () => {
   const [payments, setPayments] = useState([]);
@@ -41,7 +41,11 @@ const ViewPayments = () => {
     queryFn: fetchBalance,
   });
 
-  if (isLoadingBalance) return <div>Loading balance...</div>;
+  if (isLoadingBalance) return <div><BarLoader
+  height={10}
+  speedMultiplier={0}
+  width={123}
+/></div>;
   if (isErrorBalance) {
     console.error("Balance fetch error:", errorBalance);
     return <div>Error loading balance</div>;

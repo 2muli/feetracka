@@ -3,8 +3,8 @@ import axios from "axios";
 import { confirmDialog } from "primereact/confirmdialog";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { BarLoader } from "react-spinners";
 import { toast } from "react-toastify";
-
 const ViewRemedialPayments = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const paymentsPerPage = 10;
@@ -81,7 +81,11 @@ const ViewRemedialPayments = () => {
   };
 
   // ✅ Loading & error states
-  if (isLoadingPayments || isLoadingBalance) return <div>Loading...</div>;
+  if (isLoadingPayments || isLoadingBalance) return <div><BarLoader
+  height={10}
+  speedMultiplier={0}
+  width={123}
+/></div>;
   if (isErrorPayments) return <div>Error loading payments: {errorPayments?.message}</div>;
   if (isErrorBalance) return <div>Error loading balance: {errorBalance?.message}</div>;
 

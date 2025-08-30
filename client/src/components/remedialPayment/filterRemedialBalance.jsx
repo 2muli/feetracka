@@ -2,6 +2,7 @@ import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { useState } from "react";
+import { BarLoader } from "react-spinners";
 import { toast } from "react-toastify";
 import { useAuth } from "../../context/AuthContext";
 
@@ -18,7 +19,11 @@ const FilterRemedialBalance = () => {
     return null;
     }
   if(loading){
-    return <span>Loading wait for a minute</span>
+    return <span><BarLoader
+    height={10}
+    speedMultiplier={0}
+    width={123}
+    /></span>
   }
   const handleSearch = async () => {
     if (!studentClass || !term || minBalance === "") {
@@ -104,7 +109,6 @@ const FilterRemedialBalance = () => {
             onChange={(e) => setStudentClass(e.target.value)}
           >
             <option value="">--Select Form--</option>
-            <option value="1">Form 1</option>
             <option value="2">Form 2</option>
             <option value="3">Form 3</option>
             <option value="4">Form 4</option>
