@@ -9,6 +9,8 @@ const Sidebar = ({ isSidebarOpen, searchTerm }) => {
   const isActive=userDetails?.user?.isActive;
 
   if (!isAuthenticated) return null;
+
+
   if(!isActive) return null;
 
   const normalizedSearch = searchTerm?.toLowerCase() || "";

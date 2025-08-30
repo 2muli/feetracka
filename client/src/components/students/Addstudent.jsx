@@ -124,35 +124,6 @@ const AddStudent = () => {
   <option value="4">Form 4</option>
 </select>
           </div>
-
-          {/* Parent Name */}
-          <div className="form-group mb-2">
-            <label>Parent Name</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Enter parent name"
-              name="parentName"
-              value={formData.parentName}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
-          {/* Parent Contact */}
-          <div className="form-group mb-2">
-            <label>Parent Contact</label>
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Enter parent contact"
-              name="parentContact"
-              value={formData.parentContact}
-              onChange={handleChange}
-              required
-            />
-          </div>
-
           <button type="submit" className="btn btn-success mt-3" disabled={isLoading}>
             {isLoading ? "Submitting..." : "Submit"}
           </button>
