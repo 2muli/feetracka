@@ -1,8 +1,8 @@
 import { db } from "../connectDB.js";
 export const addPayment = async (req, res) => {
   const { studentId, amountPaid, paymentMethod, term } = req.body;
-
-  if (!studentId || !amountPaid || !paymentMethod || !term) {
+const type="payment";
+  if (!studentId || !amountPaid || !paymentMethod || !term || !type) {
     return res.status(400).json({ error: "All fields are required" });
   }
 
@@ -22,9 +22,9 @@ export const addPayment = async (req, res) => {
 
     const [result] = await db.query(
       `INSERT INTO payments (
-        student_id, Amount_paid, payment_method, term, class, createdAt
-      ) VALUES (?, ?, ?, ?, ?, ?)`,
-      [studentId, amountPaid, paymentMethod, term, studentClass, createdAt]
+        student_id, Amount_paid, payment_method, term,type, class, createdAt
+      ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+      [studentId, amountPaid, paymentMethod, term, type, studentClass, createdAt]
     );
 
     res.status(201).json({
