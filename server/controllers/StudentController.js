@@ -16,9 +16,7 @@ export const addStudent = async (req, res) => {
     secondName,
     lastName,
     admissionNo,
-    className,
-    parentName,
-    parentContact,
+    className
   } = req.body;
 
   if (
@@ -26,7 +24,9 @@ export const addStudent = async (req, res) => {
     !secondName ||
     !lastName ||
     !admissionNo ||
-    !className
+    !className ||
+    !parentName ||
+    !parentContact
   ) {
     return res.status(400).json({ error: "All fields are required" });
   }
@@ -44,15 +44,13 @@ export const addStudent = async (req, res) => {
 
     const createdAt = new Date();
     const [results] = await db.query(
-      "INSERT INTO students (first_name, second_name, last_name, `student_AdmNo`, class, parent_name, parent_contact, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO students (first_name, second_name, last_name, `student_AdmNo`, class, createdAt) VALUES (?, ?, ?, ?, ?, ?)",
       [
         firstName,
         secondName,
         lastName,
         admissionNo,
         className,
-        parentName,
-        parentContact,
         createdAt,
       ]
     );
@@ -75,8 +73,6 @@ export const updateStudent = async (req, res) => {
     lastName,
     admissionNo,
     className,
-    parentName,
-    parentContact,
   } = req.body;
 
   if (
@@ -85,7 +81,9 @@ export const updateStudent = async (req, res) => {
     !secondName ||
     !lastName ||
     !admissionNo ||
-    !className 
+    !className ||
+    !parentName ||
+    !parentContact
   ) {
     return res.status(400).json({ error: "All fields are required" });
   }
@@ -102,8 +100,8 @@ export const updateStudent = async (req, res) => {
     }
 
     const [result] = await db.query(
-      "UPDATE students SET first_name = ?, second_name = ?, last_name = ?, `student_AdmNo` = ?, `class` = ?, parent_name = ?, parent_contact = ? WHERE id = ?",
-      [firstName, secondName, lastName, admissionNo, className, parentName, parentContact, id]
+      "UPDATE students SET first_name = ?, second_name = ?, last_name = ?, `student_AdmNo` = ?, `class` = ? WHERE id = ?",
+      [firstName, secondName, lastName, admissionNo, className,id]
     );
 
     if (result.affectedRows === 0) {

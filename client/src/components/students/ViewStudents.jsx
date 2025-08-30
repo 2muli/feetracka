@@ -119,7 +119,6 @@ const ViewStudents = () => {
             onChange={(e) => setStudentClass(e.target.value)}
           >
             <option value="">--Select Form--</option>
-            <option value="1">Form 1</option>
             <option value="2">Form 2</option>
             <option value="3">Form 3</option>
             <option value="4">Form 4</option>

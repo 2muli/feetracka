@@ -30,8 +30,6 @@ const EditStudent = () => {
     lastName: "",
     admissionNo: "",
     className: "Form 1",
-    parentName: "",
-    parentContact: "",
   });
 
   // ✅ Fetch student
@@ -55,8 +53,6 @@ const EditStudent = () => {
         lastName: student.last_name || "",
         admissionNo: student.admissionNo || "",
         className: student.class || "Form 1",
-        parentName: student.parent_name || "",
-        parentContact: student.parent_contact || "",
       });
     }
   }, [student]);
@@ -110,7 +106,7 @@ const EditStudent = () => {
         {!isLoading && !isError && (
           <form onSubmit={handleSubmit}>
             {/* Input fields */}
-            {["firstName", "secondName", "lastName", "parentName", "parentContact"].map(
+            {["firstName", "secondName", "lastName"].map(
               (field) => (
                 <div className="form-group mb-2" key={field}>
                   <label>{field}</label>
@@ -152,7 +148,6 @@ const EditStudent = () => {
                 <option value="" disabled>
                   --Select class--
                 </option>
-                <option value="Form 1">Form 1</option>
                 <option value="Form 2">Form 2</option>
                 <option value="Form 3">Form 3</option>
                 <option value="Form 4">Form 4</option>

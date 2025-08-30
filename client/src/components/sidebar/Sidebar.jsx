@@ -6,8 +6,10 @@ const Sidebar = ({ isSidebarOpen, searchTerm }) => {
   const { isAuthenticated, userDetails } = useAuth();
   const location = useLocation();
   const isAdmin=userDetails?.user?.role;
+  const isActive=userDetails?.user?.isActive;
 
   if (!isAuthenticated) return null;
+  if(!isActive) return null;
 
   const normalizedSearch = searchTerm?.toLowerCase() || "";
   const isFeeActive = ["/viewPayment", "/viewremedialpayments"].some(path =>

@@ -12,6 +12,8 @@ const AddStudent = () => {
     lastName: "",
     admissionNo: "", // Will be handled as a number input
     className: "", // Default selected value
+    parentName: "",
+    parentContact: "",
   });
 
   const { mutate, isLoading, isError, isSuccess, error, data } = useMutation({
@@ -117,14 +119,13 @@ const AddStudent = () => {
   <option value="">
     --Select class--
   </option>
-  <option value="1">Form 1</option>
   <option value="2">Form 2</option>
   <option value="3">Form 3</option>
   <option value="4">Form 4</option>
 </select>
           </div>
 
-          {/* Parent Name 
+          {/* Parent Name */}
           <div className="form-group mb-2">
             <label>Parent Name</label>
             <input
@@ -136,9 +137,9 @@ const AddStudent = () => {
               onChange={handleChange}
               required
             />
-          </div>*/}
+          </div>
 
-          {/* Parent Contact 
+          {/* Parent Contact */}
           <div className="form-group mb-2">
             <label>Parent Contact</label>
             <input
@@ -151,7 +152,7 @@ const AddStudent = () => {
               required
             />
           </div>
-*/}
+
           <button type="submit" className="btn btn-success mt-3" disabled={isLoading}>
             {isLoading ? "Submitting..." : "Submit"}
           </button>
