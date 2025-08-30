@@ -4,19 +4,21 @@ import { useAuth } from "./AuthContext";
 
 const ProtectedRoute = () => {
   const { isAuthenticated, loading, userDetails } = useAuth();
-if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+
   if (loading || !userDetails?.user) {
     return (
-      <div className="d-flex align-items-center justify-content-center h-screen">
+      <div className="d-flex align-items-center justify-content-center vh-100 bg-white">
         <ClipLoader
-          color="white"
-          size={60}   
+          color="#3b4c0a"
+          size={60}
           speedMultiplier={2}
         />
       </div>
     );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
   }
 
   if (userDetails?.user?.isActive !== 1) {
