@@ -149,8 +149,6 @@ const ViewStudents = () => {
               <th>Full Name</th>
               <th>Adm No.</th>
               <th>Form</th>
-              <th>Parent Name</th>
-              <th>Parent Contact</th>
               <th>Actions</th>
             </tr>
           </thead>
