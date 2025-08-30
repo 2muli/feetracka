@@ -6,7 +6,6 @@ import { canIPay } from "../utils/canIPay.js";
 import { checkIfUserIsActive } from "../utils/isActive.js";
 const router = express.Router();
 
-// Get all fee structures
 router.get("/todayPayments",verifyToken,checkIfUserIsActive,getTodayPayments);
 router.get("/getTotalPayments",verifyToken,checkIfUserIsActive,getTotalPayments);
 router.get("/getPaymentSummary",verifyToken,checkIfUserIsActive,getPaymentSummary);

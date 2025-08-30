@@ -25,10 +25,8 @@ export const canIPayRemedial = async (req, res, next) => {
       return res.status(404).json({ error: "Student not found or class missing" });
     }
 
-    // ✅ Always allow Term 1 payments
     if (term === '1') return next();
 
-    // ✅ Allow editing if paymentId exists
     if (paymentId) {
       const [existingPayment] = await db.query(
         "SELECT id FROM remedialpayments WHERE id = ? AND student_id = ? AND term = ?",
@@ -37,7 +35,7 @@ export const canIPayRemedial = async (req, res, next) => {
       if (existingPayment.length > 0) return next();
     }
 
-    // ✅ Check if newcomer (no previous payments at all)
+    // Check if newcomer (no previous payments at all)
     const [allPayments] = await db.query(
       "SELECT COUNT(*) AS count FROM remedialpayments WHERE student_id = ?",
       [studentId]
@@ -45,16 +43,13 @@ export const canIPayRemedial = async (req, res, next) => {
     const isNewcomer = Number(allPayments[0]?.count) === 0;
 
     if (isNewcomer) {
-      // Allow first payment ONLY if it's for Term 1
       if (term === '1') return next();
 
-      // ❌ Newcomer trying to pay Term 2 or 3 first — reject
       return res.status(403).json({
         error: `New student must first pay for Term 1 before proceeding to Term ${term}`,
       });
     }
 
-    // ✅ Check previous term payments
     const previousTerm = termOrder[requestedTermIndex - 1];
 
     const [paymentRow] = await db.query(

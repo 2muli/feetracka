@@ -19,6 +19,7 @@ const ViewStudents = () => {
   // 💡 Fetch students by class
   const fetchStudentsByClass = async () => {
     if (!studentClass) return;
+    setIsLoading(true);
     try {
       const res = await axios.get(`/students/studentsByClass?className=${studentClass}`);
       setStudents(res.data);
@@ -26,6 +27,8 @@ const ViewStudents = () => {
     } catch (error) {
       console.error("Failed to fetch students:", error);
       setStudents([]);// clear students if error
+    }finally{
+      setIsLoading(false)
     }
   };
 
@@ -92,13 +95,14 @@ const ViewStudents = () => {
   const indexOfFirst = indexOfLast - studentsPerPage;
   const currentStudents = students.slice(indexOfFirst, indexOfLast);
 
-  if(isLoading){
-    return <span><BarLoader
-    height={10}
-    speedMultiplier={0}
-    width={123}
-    /></span>
+  if (isLoading) {
+    return (
+      <div className="d-flex align-items-center justify-content-center" style={{ height: "100vh" }}>
+        <BarLoader color="#3b4c0a" height={10} width={150} speedMultiplier={1} />
+      </div>
+    );
   }
+  
   return (
     <main className="sb-nav-fixed">
       <style>{`

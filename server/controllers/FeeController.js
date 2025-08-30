@@ -1,4 +1,3 @@
-// controllers/feeController.js
 import { db } from "../connectDB.js";
 
 export const addFee = async (req, res) => {
@@ -11,8 +10,6 @@ export const addFee = async (req, res) => {
   try {
     const createdAt = new Date();
     const currentYear = createdAt.getFullYear();
-
-    // ✅ Check if fee already exists for same class, term, and year
     const [existing] = await db.query(
       "SELECT * FROM fee_striucture WHERE class = ? AND term = ? AND Year = ?",
       [classPaid, term, currentYear]
@@ -23,8 +20,7 @@ export const addFee = async (req, res) => {
         .status(409)
         .json({ error: "Fee for that class and term has already been added" });
     }
-
-    // ✅ Proceed to insert since no duplicate
+    // Proceed to insert since no duplicate
     const [results] = await db.query(
       "INSERT INTO fee_striucture (class, term, Amount_paid, created_at, Year) VALUES (?, ?, ?, ?, ?)",
       [classPaid, term, amountPaid, createdAt, currentYear]
@@ -142,13 +138,12 @@ export const getStudentTermBalances = async (req, res) => {
     const studentClass = student.class;
     const fullName = `${student.first_name} ${student.second_name} ${student.last_name}`;
 
-    // Step 2: Get all term fees for the class
+    
     const [feeStructure] = await db.query(
       `SELECT term, Amount_paid FROM fee_striucture WHERE class = ? ORDER BY term ASC`,
       [studentClass]
     );
 
-    // Step 3: Get all payments made by the student (irrespective of term)
     const [payments] = await db.query(
       `SELECT Amount_paid FROM payments WHERE student_id = ? ORDER BY createdAt ASC`,
       [studentId]
@@ -201,7 +196,7 @@ export const getStudentTermBalances = async (req, res) => {
   }
 };
 
-// 🎯 2. Middleware-style function: Check if previous term is cleared before allowing payment
+// Check if previous term is cleared before allowing payment
 export const canPayForTerm = async (req, res) => {
   const { studentId, term } = req.body;
   if (!studentId || !term) return res.status(400).json({ error: "Student ID and term required" });

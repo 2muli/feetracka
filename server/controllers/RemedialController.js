@@ -1,4 +1,3 @@
-// controllers/remedialController.js
 import { db } from "../connectDB.js";
 
 export const addRemedial = async (req, res) => {
@@ -11,7 +10,7 @@ export const addRemedial = async (req, res) => {
   try {
     const createdAt = new Date();
 
-    // ✅ Check if remedial already exists for same class, term, and year
+    //Check if remedial already exists for same class, term, and year
     const [existing] = await db.query(
       "SELECT * FROM remedial WHERE term = ?",
       [term]
@@ -23,7 +22,7 @@ export const addRemedial = async (req, res) => {
         .json({ error: "Remedial for term has already been added" });
     }
 
-    // ✅ Proceed to insert since no duplicate
+    // Proceed to insert since no duplicate
     const [results] = await db.query(
       "INSERT INTO remedial ( term, Amount_paid, createdAt) VALUES (?, ?, ?)",
       [term, amountPaid, createdAt]

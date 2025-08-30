@@ -15,16 +15,13 @@ const server = http.createServer(app);
 // === CORS Configuration ===
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://feetracka.vercel.app",
-  "https://feetracka-muli-muthuis-projects.vercel.app",
-  "https://feetracka-pmihxfav4-muli-muthuis-projects.vercel.app",
   process.env.FRONTEND_URL
 ].filter(Boolean);
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin) return callback(null, true); // Allow non-browser tools
+      if (!origin) return callback(null, true); 
       const allowed = allowedOrigins.some((allowedOrigin) => {
         if (allowedOrigin.includes("*")) {
           const regex = new RegExp(allowedOrigin.replace("*", ".*"));
@@ -54,7 +51,7 @@ app.get("/healthcheck", (req, res) => {
 
 // === Home route ===
 app.get("/", (req, res) => {
-  res.send("✅ Backend is running successfully on Render!");
+  res.send("Backend is running successfully on Render!");
 });
 
 // === Routes ===

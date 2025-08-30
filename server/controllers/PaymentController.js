@@ -7,7 +7,6 @@ const type="payment";
   }
 
   try {
-    // Fetch student ID and class
     const [student] = await db.query(
       "SELECT id, class FROM students WHERE id = ?",
       [studentId]

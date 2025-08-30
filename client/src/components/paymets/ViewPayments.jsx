@@ -11,7 +11,7 @@ const ViewPayments = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const paymentsPerPage = 10;
 
-  // 🧠 Fetch Payments
+  // Fetch Payments
   const fetchPayments = async () => {
     try {
       const res = await axios.get(`${import.meta.env.VITE_API_URL}/server/payments`);
@@ -41,11 +41,14 @@ const ViewPayments = () => {
     queryFn: fetchBalance,
   });
 
-  if (isLoadingBalance) return <div><BarLoader
-  height={10}
-  speedMultiplier={0}
-  width={123}
-/></div>;
+  if (isLoadingBalance) {
+    return (
+      <div className="d-flex align-items-center justify-content-center" style={{ height: "100vh" }}>
+        <BarLoader color="#3b4c0a" height={10} width={150} speedMultiplier={1} />
+      </div>
+    );
+  }
+  
   if (isErrorBalance) {
     console.error("Balance fetch error:", errorBalance);
     return <div>Error loading balance</div>;
@@ -139,13 +142,11 @@ const ViewPayments = () => {
           </tbody>
         </table>
 
-        {/* ⛔ No records */}
         {payments.length === 0 && (
           <div className="alert alert-info">No payments found.</div>
         )}
 
-        {/* 💖 Balance Display */}
-        <div className="my-4 text-white p-3 rounded text-center">
+               <div className="my-4 text-white p-3 rounded text-center">
           <p><strong>Expected Amount:</strong> KES {Number(balanceData.totalExpected).toLocaleString()}/=</p>
           <p><strong>Paid Amount:</strong> KES {Number(balanceData.totalPaid).toLocaleString()}/=</p>
           <p><strong>Balance:</strong> KES {Number(balanceData.balance).toLocaleString()}/=</p>

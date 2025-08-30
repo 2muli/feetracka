@@ -12,23 +12,18 @@ export const sendResetEmail = async (req, res) => {
     return res.status(400).json({ error: "Email is required" });
   }
 
-  // Step 1: Generate a raw token and hash it for secure storage
   const rawToken = crypto.randomBytes(32).toString("hex");
   const hashedToken = crypto.createHash("sha256").update(rawToken).digest("hex");
 
-  const expiry = new Date(Date.now() + 3600000); // 1 hour from now
+  const expiry = new Date(Date.now() + 3600000); 
 
   try {
-    // Step 2: Save hashed token & expiry to the DB
     await db.query(
       "UPDATE users SET reset_token = ?, reset_token_expiry = ? WHERE email = ?",
       [hashedToken, expiry, email]
     );
-
-    // Step 3: Create reset link (send raw token in URL)
     const resetLink = `${process.env.FRONTEND_URL_EMAIL}/change-password/${rawToken}`;
 
-    // Step 4: Configure Gmail SMTP
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -37,7 +32,6 @@ export const sendResetEmail = async (req, res) => {
       },
     });
 
-    // Step 5: Email content
     await transporter.sendMail({
       from: `"FeeTracka" <${process.env.EMAIL_USER}>`,
       to: email,
@@ -56,7 +50,6 @@ export const sendResetEmail = async (req, res) => {
       `,
     });
 
-    // Step 6: Always send same response (to protect identity)
     return res.status(200).json({
       success: true,
       message: "If the email exists, a reset link has been sent. Check your inbox.",

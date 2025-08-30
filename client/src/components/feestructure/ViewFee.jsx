@@ -26,11 +26,14 @@ const ViewFee = () => {
   useEffect(() => {
     fetchFees();
   }, []);
-if (isLoading) return <div><BarLoader
-  height={10}
-  speedMultiplier={0}
-  width={123}
-/></div>;
+  if (isLoading) {
+    return (
+      <div className="d-flex align-items-center justify-content-center" style={{ height: "100vh" }}>
+        <BarLoader color="#3b4c0a" height={10} width={150} speedMultiplier={1} />
+      </div>
+    );
+  }
+  
    const handleDelete = (id) => {
     confirmDialog({
       message: 'Do you want to delete this fee?',

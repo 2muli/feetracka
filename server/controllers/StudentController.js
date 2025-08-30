@@ -30,7 +30,6 @@ export const addStudent = async (req, res) => {
   }
 
   try {
-    // 💥 Check if Admission No already exists
     const [existing] = await db.query(
       "SELECT id FROM students WHERE `student_AdmNo` = ?",
       [admissionNo]

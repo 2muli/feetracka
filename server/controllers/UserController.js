@@ -36,7 +36,6 @@ export const getUsers = async (req, res) => {
   }
 };
 
-// 🟢 2. ADD USER
 export const Register = async (req, res) => {
   const {
     firstName,
@@ -47,18 +46,15 @@ export const Register = async (req, res) => {
     password,
   } = req.body;
  const role=0;
-  // Validate required fields
   if (!firstName || !lastName || !email || !phone || !password) {
     return errorResponse(res, 400, "Required fields are missing");
   }
   try {
-    // Check for existing email
     const existingEmail = await query("SELECT id FROM users WHERE email = ?", [email]);
     if (existingEmail.length > 0) {
       return errorResponse(res, 409, "Email already exists");
     }
 
-    // Check for existing phone
     const existingPhone = await query("SELECT id FROM users WHERE phone = ?", [phone]);
     if (existingPhone.length > 0) {
       return errorResponse(res, 409, "Phone number already exists");
@@ -69,7 +65,6 @@ export const Register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     const createdAt = new Date();
 
-    // Insert new user
     const result = await query(
       `INSERT INTO users 
       (first_name, second_name, last_name, email, phone, role, password, createdAt) 
@@ -77,7 +72,6 @@ export const Register = async (req, res) => {
       [firstName, secondName, lastName, email, phone, role, hashedPassword, createdAt]
     );
 
-    // Return success with new user data (excluding password)
     return successResponse(res, 201, {
       message: "User added successfully",
       user: {
@@ -96,8 +90,6 @@ export const Register = async (req, res) => {
     return errorResponse(res, 500, "Internal server error");
   }
 };
-// 🟢 3. LOGIN (Fixed implementation)
-// controllers/auth.js
 export const login = async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: "Email and password are required" });
@@ -143,8 +135,6 @@ export const login = async (req, res) => {
 };
 
 
-
-// 🟢 4. VERIFY TOKEN MIDDLEWARE (Fixed implementation)
 export const verifyToken = async (req, res, next) => {
   const token = req.cookies?.access_token || 
                req.headers?.authorization?.split(' ')[1];
@@ -178,15 +168,12 @@ export const verifyToken = async (req, res, next) => {
     return errorResponse(res, 403, "Invalid token");
   }
 };
-
-// 🟢 5. GET LOGGED USER
 export const getLoggedUser = async (req, res) => {
   try {
     if (!req.user) {
       return errorResponse(res, 401, "Not authenticated");
     }
 
-    // Get full user details (excluding password)
     const [user] = await query(
       "SELECT id, first_name, second_name, last_name, email, phone, role,isActive, createdAt FROM users WHERE id = ?",
       [req.user.id]
@@ -243,7 +230,6 @@ export const updateUser = async (req, res) => {
     return errorResponse(res, 500, "Internal server error");
   }
 };
-// 🟢 9. TOGGLE USER ACTIVATION
 export const toggleUserActivation = async (req, res) => {
   const userId = req.params.id;
   const { isActive } = req.body;
@@ -258,7 +244,6 @@ export const toggleUserActivation = async (req, res) => {
 };
 
 
-// 🟢 7. DELETE USER
 export const deleteUser = async (req, res) => {
   const { id } = req.params;
 
@@ -289,7 +274,6 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-// 🟢 8. GET USER BY ID
 export const getUserById = async (req, res) => {
   const { id } = req.params;
 
@@ -325,7 +309,6 @@ export const getUserById = async (req, res) => {
   }
 };
 
-// 🟢 9. GET USER COUNT
 export const getUserCount = async (req, res) => {
   try {
     const [rows] = await query("SELECT COUNT(*) AS count FROM users");
@@ -336,7 +319,6 @@ export const getUserCount = async (req, res) => {
   }
 };
 
-// 🟢 10. LOGOUT
 export const logout = (req, res) => {
   res.clearCookie("access_token", {
     httpOnly: true,
@@ -381,10 +363,8 @@ export const changePassword = async (req, res) => {
       return errorResponse(res, 401, "Current password is incorrect");
     }
 
-    // Hash new password
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
-    // Update password in database
     await query("UPDATE users SET password = ? WHERE id = ?", [hashedNewPassword, user.id]);
 
     return successResponse(res, 200, { message: "Password updated successfully" });

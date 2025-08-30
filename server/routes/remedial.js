@@ -1,4 +1,3 @@
-// routes/fee.js
 import express from "express";
 import { addRemedial, deleteRemedial, getRemedialById, getRemedialByTerm, getRemedials, getRemedialTerms, updateRemedial } from "../controllers/RemedialController.js";
 import { verifyToken } from "../controllers/UserController.js";

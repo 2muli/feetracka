@@ -1,7 +1,7 @@
 import { db } from "../connectDB.js";
 
 export const isAdmin = async (req, res, next) => {
-  const userId = Number(req.user?.id); // Convert to number
+  const userId = Number(req.user?.id);
 
   try {   
     if (!userId || isNaN(userId)) {
