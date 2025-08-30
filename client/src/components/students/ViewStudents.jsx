@@ -58,7 +58,7 @@ const ViewStudents = () => {
     const doc = new jsPDF();
     doc.text(`Form ${studentClass} Students List`, 14, 15);
 
-    const tableColumn = ["#", "Adm No.", "Full Name", "Form", "Parent Name", "Parent Contact"];
+    const tableColumn = ["#", "Adm No.", "Full Name", "Form"];
     const tableRows = [];
 
     students.forEach((student, index) => {
@@ -67,8 +67,6 @@ const ViewStudents = () => {
         student.student_AdmNo,
         `${student.first_name} ${student.second_name} ${student.last_name}`,
         student.class,
-        student.parent_name,
-        student.parent_contact,
       ]);
     });
 
